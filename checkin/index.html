@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registration desk</title>
+  <style>
+    :root { --navy: #071A4A; --gold: #F5B942; --ink: #0B1B45; --muted: #5C6B8A; --line: #E3E8F4; --ok: #1F8A5B; --warn: #A15C07; --bad: #C5343A; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; background: var(--navy); color: white; }
+    main { max-width: 520px; margin: 0 auto; padding: 28px 18px 48px; }
+    .card { background: white; color: var(--ink); border-radius: 18px; padding: 18px; margin-top: 16px; }
+    input { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 12px; font: inherit; }
+    button { border: 0; border-radius: 10px; padding: 12px 14px; background: var(--navy); color: white; font-weight: 700; cursor: pointer; }
+    button.gold { background: var(--gold); color: var(--navy); }
+    .result { border-radius: 16px; padding: 18px; margin-top: 16px; }
+    .valid { background: #E5F6EE; color: var(--ok); }
+    .already_checked_in { background: #FFF4DE; color: var(--warn); }
+    .invalid, .revoked, .suspended { background: #FDECEC; color: var(--bad); }
+    video { width: 100%; border-radius: 12px; background: black; }
+    .muted { color: var(--muted); font-size: 14px; }
+    a { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="/admin/">Admin</a></p>
+    <h1>Registration desk</h1>
+    <p id="count" class="muted"></p>
+    <form id="login" class="card">
+      <label>Staff email</label>
+      <input id="email" type="email" value="desk@example.com" style="margin:8px 0 12px" />
+      <label>Password</label>
+      <input id="password" type="password" value="Passw0rd!" style="margin:8px 0 12px" />
+      <button type="submit">Sign in</button>
+      <p id="login-error" style="color:#C5343A"></p>
+    </form>
+    <section id="desk" class="card" hidden>
+      <video id="camera" playsinline hidden></video>
+      <p class="muted">Scan a name-tag QR, or type the badge ID such as NMC-2026-001.</p>
+      <form id="scan">
+        <input id="token" placeholder="Badge ID or QR text" autocomplete="off" />
+        <button class="gold" style="margin-top:10px;width:100%" type="submit">Check in</button>
+      </form>
+      <div id="result"></div>
+      <div id="matches"></div>
+    </section>
+  </main>
+  <script>
+    const tokenKey = "nmc_desk_token";
+    let token = localStorage.getItem(tokenKey) || "";
+    const login = document.getElementById("login");
+    const desk = document.getElementById("desk");
+
+    async function api(path, options = {}) {
+      const response = await fetch("/api/v1" + path, {
+        ...options,
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token, ...(options.headers || {}) },
+      });
+      const body = await response.json().catch(() => ({}));
+      if (response.status === 401) { showLogin("Sign in again."); throw new Error("unauthorized"); }
+      if (!response.ok || body.success === false) throw new Error(body.error ? body.error.message : "Request failed.");
+      return body.data;
+    }
+
+    function showLogin(message) {
+      token = "";
+      localStorage.removeItem(tokenKey);
+      login.hidden = false;
+      desk.hidden = true;
+      document.getElementById("login-error").textContent = message || "";
+    }
+
+    function paint(data) {
+      const labels = {
+        valid: "Checked in",
+        already_checked_in: "Already checked in",
+        invalid: "Invalid badge",
+        revoked: "Badge revoked",
+        suspended: "Account suspended",
+      };
+      const when = data.checked_in_at ? ` at ${data.checked_in_at}` : "";
+      document.getElementById("result").innerHTML = `<div class="result ${data.result}"><strong>${labels[data.result] || data.result}</strong><div>${data.full_name || ""} ${data.organization ? "· " + data.organization : ""}</div><div>${data.badge_code || ""}${when}</div></div>`;
+      document.getElementById("token").value = "";
+      setTimeout(() => { document.getElementById("result").innerHTML = ""; }, 3000);
+      refreshCount();
+    }
+
+    async function refreshCount() {
+      const stats = await api("/admin/checkin/stats");
+      document.getElementById("count").textContent = `${stats.today} checked in today · ${stats.total} total`;
+    }
+
+    async function openDesk() {
+      login.hidden = true;
+      desk.hidden = false;
+      await refreshCount();
+      startCamera();
+    }
+
+    document.getElementById("login").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const response = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: document.getElementById("email").value, password: document.getElementById("password").value }),
+      });
+      const body = await response.json();
+      if (!response.ok || !body.success) {
+        document.getElementById("login-error").textContent = body.error ? body.error.message : "Sign in failed.";
+        return;
+      }
+      if (!["checkin_staff", "organizer", "admin"].includes(body.data.user.role)) {
+        document.getElementById("login-error").textContent = "This account cannot use the desk.";
+        return;
+      }
+      token = body.data.access_token;
+      localStorage.setItem(tokenKey, token);
+      openDesk();
+    });
+
+    document.getElementById("scan").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const value = document.getElementById("token").value.trim();
+      if (!value) return;
+      paint(await api("/admin/checkin/verify", { method: "POST", body: JSON.stringify({ token: value }) }));
+    });
+
+    document.getElementById("token").addEventListener("input", async (event) => {
+      const value = event.target.value.trim();
+      if (value.length < 2) { document.getElementById("matches").innerHTML = ""; return; }
+      const data = await api("/admin/checkin/lookup?q=" + encodeURIComponent(value));
+      document.getElementById("matches").innerHTML = (data.matches || []).map((item) => `<button type="button" data-code="${item.badge_code}" style="display:block;width:100%;margin-top:8px;background:#F4F7FB;color:#0B1B45">${item.full_name} · ${item.badge_code}</button>`).join("");
+      document.querySelectorAll("[data-code]").forEach((button) => button.addEventListener("click", async () => {
+        document.getElementById("token").value = button.dataset.code;
+        paint(await api("/admin/checkin/verify", { method: "POST", body: JSON.stringify({ token: button.dataset.code }) }));
+      }));
+    });
+
+    async function startCamera() {
+      if (!navigator.mediaDevices || !("BarcodeDetector" in window)) return;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        const video = document.getElementById("camera");
+        video.hidden = false;
+        video.srcObject = stream;
+        await video.play();
+        const detector = new BarcodeDetector({ formats: ["qr_code"] });
+        const timer = setInterval(async () => {
+          if (desk.hidden) { clearInterval(timer); stream.getTracks().forEach((track) => track.stop()); return; }
+          const codes = await detector.detect(video);
+          if (codes.length) {
+            clearInterval(timer);
+            stream.getTracks().forEach((track) => track.stop());
+            video.hidden = true;
+            paint(await api("/admin/checkin/verify", { method: "POST", body: JSON.stringify({ token: codes[0].rawValue }) }));
+          }
+        }, 700);
+      } catch {}
+    }
+
+    if (token) openDesk().catch(() => showLogin());
+  </script>
+</body>
+</html>

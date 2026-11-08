@@ -1,0 +1,14 @@
+{
+  "@@locale": "en",
+  "welcomeBack": "Welcome Back",
+  "signInSubtitle": "Sign in to continue your congress experience",
+  "signIn": "Sign In",
+  "createAccount": "Create Account",
+  "forgotPassword": "Forgot password?",
+  "joinThe": "Join the",
+  "homeGreeting": "Welcome Back,",
+  "searchHint": "Search sessions, speakers, topics...",
+  "quickAccess": "Quick Access",
+  "upcomingSessions": "Upcoming Sessions",
+  "congressEnded": "The congress has ended. Thank you for joining."
+}

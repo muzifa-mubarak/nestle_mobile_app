@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Congress Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --navy: #071A4A; --gold: #F5B942; --ink: #0B1B45; --muted: #5C6B8A; --line: #E3E8F4; --soft: #F4F7FC; --danger: #C5343A; --ok: #1F8A5B; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--ink); background: var(--soft); }
+    button, input, select, textarea { font: inherit; }
+    .login { min-height: 100vh; display: grid; place-items: center; background: var(--navy); padding: 24px; }
+    .panel { width: min(420px, 100%); background: white; border-radius: 20px; padding: 28px; }
+    h1 { margin: 0 0 6px; font-size: 24px; }
+    .sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 6px; }
+    input, select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; background: white; }
+    textarea { min-height: 72px; resize: vertical; }
+    .btn { border: 0; border-radius: 10px; padding: 11px 14px; background: var(--navy); color: white; font-weight: 650; cursor: pointer; }
+    .btn.gold { background: var(--gold); color: var(--navy); }
+    .btn.ghost { background: white; color: var(--navy); border: 1px solid var(--line); }
+    .btn.danger { background: var(--danger); }
+    .btn:disabled { opacity: .5; cursor: default; }
+    .err { color: var(--danger); font-size: 13px; margin-top: 10px; }
+    .shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+    nav { background: var(--navy); color: white; padding: 22px 14px; }
+    nav strong { display: block; margin: 0 8px 18px; }
+    nav button { display: block; width: 100%; text-align: left; background: transparent; color: #D5DEF5; border: 0; border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+    nav button.on { background: rgba(245,185,66,.16); color: var(--gold); }
+    main { padding: 28px; }
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .card { background: white; border-radius: 16px; padding: 16px; border: 1px solid var(--line); }
+    .card b { display: block; font-size: 28px; margin-top: 4px; }
+    .card span { color: var(--muted); font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 16px; overflow: hidden; }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: .03em; }
+    .form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: white; border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
+    .form .wide { grid-column: 1 / -1; }
+    .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill { display: inline-block; border-radius: 999px; padding: 2px 8px; background: #EEF2FB; font-size: 12px; font-weight: 650; }
+    .hidden { display: none !important; }
+    @media (max-width: 800px) { .shell { grid-template-columns: 1fr; } .form { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <section id="login" class="login">
+    <form class="panel" id="login-form">
+      <h1>Congress admin</h1>
+      <p class="sub">Sign in with an organizer account to manage sessions, polls, questions, resources, and attendees.</p>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" value="organizer@example.com" required />
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" value="Passw0rd!" required />
+      <button class="btn" style="margin-top:16px;width:100%" type="submit">Sign in</button>
+      <p id="login-error" class="err"></p>
+    </form>
+  </section>
+
+  <div id="app" class="shell hidden">
+    <nav>
+      <strong>Nestlé Congress</strong>
+      <button data-view="dashboard" class="on">Dashboard</button>
+      <button data-view="sessions">Sessions</button>
+      <button data-view="polls">Polls</button>
+      <button data-view="questions">Questions</button>
+      <button data-view="resources">Resources</button>
+      <button data-view="exhibitors">Exhibitors</button>
+      <button data-view="attendees">Attendees</button>
+      <button data-view="messages">Messages</button>
+      <button id="open-desk" type="button">Check-in desk</button>
+      <button id="sign-out" style="margin-top:18px">Sign out</button>
+    </nav>
+    <main>
+      <div class="top">
+        <div>
+          <h1 id="title" style="font-size:22px">Dashboard</h1>
+          <p id="event-line" class="sub" style="margin:4px 0 0"></p>
+        </div>
+      </div>
+      <section id="view"></section>
+    </main>
+  </div>
+
+  <script>
+    const tokenKey = "nmc_admin_token";
+    let token = localStorage.getItem(tokenKey) || "";
+    let view = "dashboard";
+    let eventInfo = null;
+
+    const login = document.getElementById("login");
+    const app = document.getElementById("app");
+    const viewEl = document.getElementById("view");
+    const titleEl = document.getElementById("title");
+
+    function showLogin(message) {
+      token = "";
+      localStorage.removeItem(tokenKey);
+      app.classList.add("hidden");
+      login.classList.remove("hidden");
+      document.getElementById("login-error").textContent = message || "";
+    }
+
+    async function api(path, options = {}) {
+      const response = await fetch("/api/v1" + path, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+          ...(options.headers || {}),
+        },
+      });
+      if (response.status === 401) {
+        showLogin("Sign in again to continue.");
+        throw new Error("unauthorized");
+      }
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || body.success === false) {
+        const message = body.error && body.error.message ? body.error.message : "Request failed.";
+        throw new Error(message);
+      }
+      return body.data;
+    }
+
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+    }
+
+    document.getElementById("login-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      document.getElementById("login-error").textContent = "";
+      try {
+        const response = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+          }),
+        });
+        const body = await response.json();
+        if (!response.ok || !body.success) throw new Error(body.error ? body.error.message : "Sign in failed.");
+        if (!["organizer", "admin"].includes(body.data.user.role)) throw new Error("This account cannot open the admin portal.");
+        token = body.data.access_token;
+        localStorage.setItem(tokenKey, token);
+        openApp();
+      } catch (error) {
+        document.getElementById("login-error").textContent = error.message;
+      }
+    });
+
+    document.getElementById("sign-out").addEventListener("click", () => showLogin());
+    document.getElementById("open-desk").addEventListener("click", () => window.open("/checkin/", "_blank"));
+    document.querySelectorAll("nav button[data-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        view = button.dataset.view;
+        document.querySelectorAll("nav button[data-view]").forEach((item) => item.classList.toggle("on", item === button));
+        render();
+      });
+    });
+
+    async function openApp() {
+      login.classList.add("hidden");
+      app.classList.remove("hidden");
+      const data = await api("/admin/overview");
+      eventInfo = data.event;
+      document.getElementById("event-line").textContent = eventInfo.title + " · " + eventInfo.city;
+      render();
+    }
+
+    async function render() {
+      const names = { dashboard: "Dashboard", sessions: "Sessions", polls: "Polls", questions: "Questions", resources: "Resources", exhibitors: "Exhibitors", attendees: "Attendees", messages: "Messages" };
+      titleEl.textContent = names[view];
+      viewEl.innerHTML = "<p class='sub'>Loading…</p>";
+      try {
+        if (view === "dashboard") await dashboard();
+        if (view === "sessions") await sessions();
+        if (view === "polls") await polls();
+        if (view === "questions") await questions();
+        if (view === "resources") await resources();
+        if (view === "exhibitors") await exhibitors();
+        if (view === "attendees") await attendees();
+        if (view === "messages") await messages();
+      } catch (error) {
+        if (error.message !== "unauthorized") viewEl.innerHTML = "<p class='err'>" + esc(error.message) + "</p>";
+      }
+    }
+
+    async function dashboard() {
+      const data = await api("/admin/overview");
+      eventInfo = data.event;
+      const counts = data.counts;
+      viewEl.innerHTML = `
+        <div class="cards">
+          <div class="card"><span>Attendees</span><b>${counts.attendees}</b></div>
+          <div class="card"><span>Sessions</span><b>${counts.sessions}</b></div>
+          <div class="card"><span>Live polls</span><b>${counts.active_polls}</b></div>
+          <div class="card"><span>Pending questions</span><b>${counts.pending_questions}</b></div>
+          <div class="card"><span>Resources</span><b>${counts.resources}</b></div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <label><input id="moderation" type="checkbox" ${data.event.qna_moderation_enabled ? "checked" : ""} /> Hold new questions until an organizer approves them</label>
+          <p class="sub">Leave this off for the reviewer demo so a question appears immediately.</p>
+        </div>`;
+      document.getElementById("moderation").addEventListener("change", async (event) => {
+        await api("/admin/moderation", { method: "PATCH", body: JSON.stringify({ enabled: event.target.checked }) });
+      });
+    }
+
+    async function sessions() {
+      const data = await api("/admin/sessions");
+      const options = data.categories.map((item) => `<option value="${esc(item.id)}">${esc(item.name)}</option>`).join("");
+      viewEl.innerHTML = `
+        <form class="form" id="session-form">
+          <div><label>Title</label><input name="title" required /></div>
+          <div><label>Category</label><select name="category_id">${options}</select></div>
+          <div><label>Starts</label><input name="start_at" type="datetime-local" required /></div>
+          <div><label>Ends</label><input name="end_at" type="datetime-local" required /></div>
+          <div><label>Room</label><input name="room" /></div>
+          <div><label>Speaker</label><input name="speaker_name" /></div>
+          <div class="wide"><button class="btn" type="submit">Add session</button></div>
+        </form>
+        <table><thead><tr><th>Session</th><th>When</th><th>State</th><th></th></tr></thead>
+        <tbody>${data.sessions.map((row) => `<tr>
+          <td><b>${esc(row.title)}</b><br><span class="sub">${esc(row.room || "")} ${esc(row.speaker_name || "")}</span></td>
+          <td>${esc(row.start_at || "")}</td>
+          <td><span class="pill">${esc(row.visibility)} · ${esc(row.status)}</span></td>
+          <td class="actions">
+            <button class="btn ghost" data-act="publish" data-id="${esc(row.id)}">Publish</button>
+            <button class="btn ghost" data-act="unpublish" data-id="${esc(row.id)}">Unpublish</button>
+            <button class="btn danger" data-act="cancel" data-id="${esc(row.id)}">Cancel</button>
+          </td></tr>`).join("")}</tbody></table>`;
+      document.getElementById("session-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.target);
+        await api("/admin/sessions", { method: "POST", body: JSON.stringify({
+          title: form.get("title"),
+          category_id: form.get("category_id"),
+          start_at: new Date(form.get("start_at")).toISOString(),
+          end_at: new Date(form.get("end_at")).toISOString(),
+          room: form.get("room"),
+          speaker_name: form.get("speaker_name"),
+          visibility: "published",
+        })});
+        render();
+      });
+      viewEl.querySelectorAll("button[data-act]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          await api(`/admin/sessions/${button.dataset.id}/${button.dataset.act}`, { method: "POST" });
+          render();
+        });
+      });
+    }
+
+    async function polls() {
+      const data = await api("/admin/polls");
+      viewEl.innerHTML = `
+        <form class="form" id="poll-form">
+          <div class="wide"><label>Question</label><input name="question" required /></div>
+          <div class="wide"><label>Options, one per line</label><textarea name="options" required>Yes\nNo</textarea></div>
+          <div class="wide"><button class="btn" type="submit">Create draft poll</button></div>
+        </form>
+        <table><thead><tr><th>Poll</th><th>Status</th><th></th></tr></thead>
+        <tbody>${data.polls.map((row) => `<tr>
+          <td><b>${esc(row.question)}</b><br><span class="sub">${esc(row.options.map((item) => item.label).join(" · "))}</span></td>
+          <td><span class="pill">${esc(row.status)}</span></td>
+          <td class="actions">
+            <button class="btn gold" data-status="active" data-id="${esc(row.id)}">Activate</button>
+            <button class="btn ghost" data-status="paused" data-id="${esc(row.id)}">Pause</button>
+            <button class="btn danger" data-status="closed" data-id="${esc(row.id)}">Close</button>
+          </td></tr>`).join("")}</tbody></table>`;
+      document.getElementById("poll-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.target);
+        await api("/admin/polls", { method: "POST", body: JSON.stringify({
+          question: form.get("question"),
+          options: String(form.get("options")).split("\n"),
+        })});
+        render();
+      });
+      bindStatus("/admin/polls/", "/status");
+    }
+
+    function bindStatus(prefix, suffix) {
+      viewEl.querySelectorAll("button[data-status]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          await api(prefix + button.dataset.id + suffix, { method: "POST", body: JSON.stringify({ status: button.dataset.status }) });
+          render();
+        });
+      });
+    }
+
+    async function questions() {
+      const data = await api("/admin/questions");
+      viewEl.innerHTML = `<table><thead><tr><th>Question</th><th>Status</th><th></th></tr></thead><tbody>${
+        data.questions.map((row) => `<tr>
+          <td><b>${esc(row.text)}</b><br><span class="sub">${esc(row.author_name)} · ${esc(row.category_name || "")}</span></td>
+          <td><span class="pill">${esc(row.status)}</span></td>
+          <td class="actions">
+            <button class="btn gold" data-action="approve" data-id="${esc(row.id)}">Approve</button>
+            <button class="btn ghost" data-action="hide" data-id="${esc(row.id)}">Hide</button>
+            <button class="btn danger" data-action="reject" data-id="${esc(row.id)}">Reject</button>
+            <button class="btn" data-action="answer" data-id="${esc(row.id)}">Answer</button>
+          </td></tr>`).join("") || "<tr><td colspan='3'>No questions yet.</td></tr>"
+      }</tbody></table>`;
+      viewEl.querySelectorAll("button[data-action]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const payload = { action: button.dataset.action };
+          if (button.dataset.action === "answer") {
+            const text = window.prompt("Answer");
+            if (!text) return;
+            payload.answer_text = text;
+          }
+          if (button.dataset.action === "reject") payload.reason = "Not accepted for the live list";
+          await api(`/admin/questions/${button.dataset.id}/moderate`, { method: "POST", body: JSON.stringify(payload) });
+          render();
+        });
+      });
+    }
+
+    async function resources() {
+      const data = await api("/admin/resources");
+      viewEl.innerHTML = `
+        <form class="form" id="resource-form">
+          <div><label>Title</label><input name="title" required /></div>
+          <div><label>Link</label><input name="external_url" type="url" required /></div>
+          <div class="wide"><label>Description</label><input name="description" /></div>
+          <div class="wide"><button class="btn" type="submit">Add link</button></div>
+        </form>
+        <table><thead><tr><th>Resource</th><th>Visibility</th><th></th></tr></thead><tbody>${
+          data.resources.map((row) => `<tr>
+            <td><b>${esc(row.title)}</b><br><span class="sub">${esc(row.type)}</span></td>
+            <td><span class="pill">${esc(row.visibility)}</span></td>
+            <td class="actions">
+              <button class="btn gold" data-visibility="published" data-id="${esc(row.id)}">Publish</button>
+              <button class="btn ghost" data-visibility="draft" data-id="${esc(row.id)}">Unpublish</button>
+            </td></tr>`).join("")
+        }</tbody></table>`;
+      document.getElementById("resource-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.target);
+        await api("/admin/resources", { method: "POST", body: JSON.stringify({
+          title: form.get("title"),
+          description: form.get("description"),
+          type: "link",
+          external_url: form.get("external_url"),
+        })});
+        render();
+      });
+      viewEl.querySelectorAll("button[data-visibility]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          await api(`/admin/resources/${button.dataset.id}/visibility`, { method: "POST", body: JSON.stringify({ visibility: button.dataset.visibility }) });
+          render();
+        });
+      });
+    }
+
+    async function exhibitors() {
+      const data = await api("/admin/exhibitors");
+      const options = data.categories.map((item) => `<option value="${esc(item.id)}">${esc(item.name)}</option>`).join("");
+      viewEl.innerHTML = `
+        <form class="form" id="exhibitor-form">
+          <div><label>Name</label><input name="name" required /></div>
+          <div><label>Booth</label><input name="booth" placeholder="A12" /></div>
+          <div><label>Category</label><select name="category_id"><option value="">None</option>${options}</select></div>
+          <div><label>Website</label><input name="website" type="url" /></div>
+          <div class="wide"><label>Description</label><input name="description" /></div>
+          <div class="wide"><button class="btn" type="submit">Add exhibitor</button></div>
+        </form>
+        <table><thead><tr><th>Exhibitor</th><th>Visibility</th><th></th></tr></thead><tbody>${
+          data.exhibitors.map((row) => `<tr>
+            <td><b>${esc(row.name)}</b><br><span class="sub">${esc(row.booth || "")} ${esc(row.category_name || "")}</span></td>
+            <td><span class="pill">${esc(row.visibility)}</span></td>
+            <td class="actions">
+              <button class="btn gold" data-visibility="published" data-id="${esc(row.id)}">Publish</button>
+              <button class="btn ghost" data-visibility="draft" data-id="${esc(row.id)}">Hide</button>
+              <button class="btn danger" data-delete="${esc(row.id)}">Delete</button>
+            </td></tr>`).join("")
+        }</tbody></table>`;
+      document.getElementById("exhibitor-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.target);
+        await api("/admin/exhibitors", { method: "POST", body: JSON.stringify({
+          name: form.get("name"),
+          booth: form.get("booth"),
+          category_id: form.get("category_id") || null,
+          website: form.get("website"),
+          description: form.get("description"),
+          visibility: "published",
+        })});
+        render();
+      });
+      viewEl.querySelectorAll("button[data-visibility]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          await api(`/admin/exhibitors/${button.dataset.id}`, { method: "PATCH", body: JSON.stringify({ visibility: button.dataset.visibility }) });
+          render();
+        });
+      });
+      viewEl.querySelectorAll("button[data-delete]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          await api(`/admin/exhibitors/${button.dataset.delete}`, { method: "DELETE" });
+          render();
+        });
+      });
+    }
+
+    async function messages() {
+      const data = await api("/admin/deliveries");
+      viewEl.innerHTML = `
+        <form class="form" id="announce-form">
+          <div class="wide"><label>Title</label><input name="title" maxlength="60" required /></div>
+          <div class="wide"><label>Message</label><textarea name="body" maxlength="240" required></textarea></div>
+          <div><label>Audience</label><select name="audience"><option value="all">All attendees</option><option value="checked_in">Checked-in only</option></select></div>
+          <div class="wide"><button class="btn" type="submit">Send to inbox and push</button></div>
+        </form>
+        <h2 style="font-size:16px">Recent inbox and push</h2>
+        <table><tbody>${(data.pushes || []).map((row) => `<tr><td><b>${esc(row.title)}</b><br><span class="sub">${esc(row.body || "")}</span></td><td><span class="pill">${esc(row.push_status)}</span></td></tr>`).join("") || "<tr><td>No messages yet.</td></tr>"}</tbody></table>
+        <h2 style="font-size:16px">Email log</h2>
+        <table><tbody>${(data.emails || []).map((row) => `<tr><td>${esc(row.to_email)}<br><span class="sub">${esc(row.subject)}</span></td><td><span class="pill">${esc(row.status)}</span></td></tr>`).join("") || "<tr><td>No emails yet.</td></tr>"}</tbody></table>`;
+      document.getElementById("announce-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.target);
+        await api("/admin/announcements", { method: "POST", body: JSON.stringify({ title: form.get("title"), body: form.get("body"), audience: form.get("audience") }) });
+        render();
+      });
+    }
+
+    async function attendees() {
+      const data = await api("/admin/attendees");
+      viewEl.innerHTML = `<table><thead><tr><th>Attendee</th><th>Status</th><th></th></tr></thead><tbody>${
+        data.attendees.map((row) => `<tr>
+          <td><b>${esc(row.full_name)}</b><br><span class="sub">${esc(row.email)} · ${esc(row.organization)}</span></td>
+          <td><span class="pill">${esc(row.status)}</span></td>
+          <td class="actions">
+            <button class="btn gold" data-status="active" data-id="${esc(row.id)}">Approve</button>
+            <button class="btn danger" data-status="suspended" data-id="${esc(row.id)}">Suspend</button>
+          </td></tr>`).join("")
+      }</tbody></table>`;
+      bindStatus("/admin/attendees/", "/status");
+    }
+
+    if (token) openApp().catch(() => showLogin());
+  </script>
+</body>
+</html>

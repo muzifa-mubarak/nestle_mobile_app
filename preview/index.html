@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nestlé Medical Congress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #071A4A; --navy2: #0B2C78; --gold: #F5B942; --blue: #2F6BFF; --cyan: #4FC3F7;
+      --muted: #6B7A99; --ink: #0B1B45; --line: #E3E8F4; --soft: #F3F6FC; --danger: #E5484D; --ok: #22A06B;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: Inter, system-ui, sans-serif; background: #040e2c; color: white; }
+    .stage { max-width: 430px; margin: 0 auto; min-height: 100vh; background: linear-gradient(180deg, var(--navy), var(--navy2)); padding: 28px 20px 96px; }
+    h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.05; }
+    .gold { color: var(--gold); }
+    .muted { color: #A9B8DC; font-size: 13px; line-height: 1.4; }
+    .pill { display: inline-block; border: 1px solid var(--gold); color: var(--gold); border-radius: 999px; padding: 6px 12px; font-size: 10px; font-weight: 700; letter-spacing: .8px; }
+    .center { text-align: center; }
+    .rule { width: 48px; height: 2px; background: var(--gold); margin: 10px auto; }
+    .card { background: white; color: var(--ink); border-radius: 28px; padding: 20px; box-shadow: 0 8px 24px rgba(7,26,74,.18); }
+    .row { display: flex; gap: 12px; align-items: center; }
+    .shield { width: 44px; height: 44px; border-radius: 14px; background: var(--blue); color: white; display: grid; place-items: center; flex: none; }
+    label.field { display: block; margin-top: 12px; }
+    input[type="email"], input[type="password"], input[type="text"], input[type="search"] {
+      width: 100%; border: 1px solid var(--line); background: var(--soft); border-radius: 14px; padding: 14px 14px 14px 40px; font: inherit; color: var(--ink);
+    }
+    .field { position: relative; }
+    .field .ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; display: grid; place-items: center; pointer-events: none; }
+    .field .ico svg { display: block; }
+    .eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: 0; background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; padding: 0; }
+    .btn { margin-top: 16px; width: 100%; border: 0; border-radius: 14px; padding: 15px; color: white; font-weight: 700; cursor: pointer; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+    .btn:disabled { opacity: .45; cursor: default; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .err { color: var(--danger); font-size: 12px; margin-top: 8px; }
+    .ok { color: var(--ok); font-size: 12px; margin-top: 8px; }
+    .linkish { background: none; border: 0; color: var(--blue); font-weight: 700; cursor: pointer; padding: 0; font: inherit; }
+    .goldlink { color: var(--gold); font-weight: 800; cursor: pointer; background: none; border: 0; font: inherit; }
+    .chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 22px; }
+    .chip { background: rgba(255,255,255,.08); border-radius: 16px; padding: 12px 8px; text-align: center; font-size: 11px; line-height: 1.25; }
+    .check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--ink); margin: 12px 0; }
+    .rules { font-size: 12px; color: var(--muted); margin: 8px 0; }
+    .rules div.pass { color: var(--ok); }
+    .back { width: 40px; height: 40px; border-radius: 14px; border: 0; background: rgba(255,255,255,.08); color: white; font-size: 20px; cursor: pointer; }
+    .otp { display: flex; gap: 8px; }
+    .otp input { width: 0; flex: 1 1 0; min-width: 0; text-align: center; padding: 14px 0; font-size: 20px; font-weight: 700; border: 1px solid var(--line); background: var(--soft); border-radius: 14px; color: var(--ink); }
+    .search { display: flex; align-items: center; background: white; border-radius: 18px; padding-right: 6px; }
+    .search input { border: 0; background: transparent; }
+    .go { width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--cyan); color: white; cursor: pointer; }
+    .feature { margin-top: 16px; border-radius: 20px; padding: 16px; background: linear-gradient(90deg, #1D4ED8, #38BDF8); display: flex; gap: 12px; cursor: pointer; }
+    .overline { font-size: 10px; letter-spacing: .8px; font-weight: 700; color: var(--gold); }
+    .head { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .tile { background: none; border: 0; color: white; cursor: pointer; font: inherit; }
+    .tile i, .ico-box { width: 52px; height: 52px; margin: 0 auto 6px; display: grid; place-items: center; border-radius: 16px; background: linear-gradient(180deg, var(--blue), var(--cyan)); }
+    .tile span { display: block; font-size: 11px; }
+    .ask-fab { position: fixed; right: max(18px, calc(50% - 197px)); bottom: 78px; z-index: 6; display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 12px 16px; background: var(--gold); color: #1a1404; font-weight: 800; cursor: pointer; box-shadow: 0 8px 18px rgba(0,0,0,.25); }
+    .ask-fab svg { width: 18px; height: 18px; flex: none; }
+    .bubble { border-radius: 16px; padding: 12px 14px; margin-top: 10px; line-height: 1.4; }
+    .bubble.user { margin-left: 48px; background: #2F6BFF; color: white; }
+    .bubble.bot { margin-right: 28px; background: white; color: var(--ink); }
+    .chat-bar { display: flex; gap: 8px; margin-top: 12px; }
+    .chat-bar input { flex: 1; border: 0; border-radius: 14px; padding: 12px 14px; }
+    .session { background: white; color: var(--ink); border-radius: 16px; padding: 12px; display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+    .time { width: 56px; text-align: center; font-weight: 800; font-size: 13px; }
+    .time small { display: block; color: var(--muted); font-weight: 500; }
+    .panel { background: white; color: var(--ink); border-radius: 16px; padding: 18px; text-align: center; }
+    .bell { position: relative; width: 40px; height: 40px; border-radius: 14px; border: 0; background: rgba(255,255,255,.08); color: white; cursor: pointer; }
+    .dot { position: absolute; width: 8px; height: 8px; background: var(--danger); border-radius: 50%; top: 8px; right: 8px; }
+    nav.bottom { position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; width: min(430px, 100%); display: grid; grid-template-columns: 1fr 1fr; background: #071433; border-top: 1px solid rgba(255,255,255,.08); }
+    nav.bottom button { background: none; border: 0; color: #A9B8DC; padding: 14px; font: inherit; cursor: pointer; }
+    nav.bottom button.on { color: var(--gold); font-weight: 700; }
+    .days, .chips-row { display: flex; gap: 8px; overflow: auto; margin: 12px 0; }
+    .day, .mini { border: 0; cursor: pointer; font: inherit; }
+    .day { border-radius: 16px; padding: 10px 14px; background: rgba(255,255,255,.1); color: white; }
+    .day.on { background: var(--gold); color: #1a1404; font-weight: 800; }
+    .mini { border-radius: 999px; padding: 7px 12px; background: var(--soft); color: var(--ink); white-space: nowrap; flex: none; }
+    .card .chips-row .mini { padding: 6px 11px; font-size: 13px; }
+    .mini.on { background: var(--blue); color: white; }
+    .strike { text-decoration: line-through; }
+    .tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--blue); background: #e8f0ff; border-radius: 999px; padding: 2px 8px; }
+    .stage.tight { padding: 10px 16px 18px; }
+    .reg-hero { text-align: center; margin-top: 6px; }
+    .reg-hero .kicker { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+    .reg-hero h1 { margin: 0; font-size: 34px; line-height: 0.98; letter-spacing: -0.6px; }
+    .reg-sub { text-align: center; color: #C5D0EA; font-size: 13.5px; line-height: 1.4; margin: 10px 6px 12px; }
+    .card.reg { border-radius: 28px; padding: 16px 14px 14px; }
+    .card.reg label.field { margin-top: 10px; }
+    .card.reg label.field:first-child { margin-top: 0; }
+    .card.reg .field input { width: 100%; border: 1px solid #E6EBF5; border-radius: 18px; background: #F4F7FB; height: 50px; padding-left: 44px; outline: none; }
+    .card.reg .field input::placeholder { color: #8B98B4; }
+    .card.reg .field input:focus { border-color: #C5D0E8; }
+    .card.reg .check input { width: 16px; height: 16px; margin: 2px 0 0; flex: none; accent-color: #2F6BFF; }
+    .card.reg .btn { border-radius: 18px; height: 50px; margin-top: 4px; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 1; }
+    .or-cap { text-align: center; color: #98A4C0; font-size: 11px; letter-spacing: 1.2px; font-weight: 600; margin: 14px 0 10px; }
+    .socials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .socials button { height: 48px; border-radius: 16px; border: 1px solid #E3E8F4; background: #fff; cursor: pointer; display: grid; place-items: center; }
+    .card.reg .check { margin: 12px 2px 8px; align-items: flex-start; }
+    .card.reg .check input { width: 16px; height: 16px; margin-top: 2px; flex: none; }
+    .card.reg .check span { font-size: 12.5px; color: #6B7A99; line-height: 1.35; }
+    .acct-foot { text-align: center; margin: 14px 0 4px; color: #C5D0EA; font-size: 14px; }
+    .appbar { display: flex; align-items: center; gap: 8px; }
+    .appbar strong { flex: 1; text-align: center; font-size: 18px; }
+    .hero-card { display: flex; gap: 12px; align-items: center; margin-top: 16px; background: rgba(255,255,255,.08); border-radius: 22px; padding: 16px; }
+    .hero-ico { width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center; background: linear-gradient(180deg, var(--blue), var(--cyan)); flex: none; }
+    .speaker { display: flex; gap: 12px; align-items: center; background: white; border: 1px solid #E6EBF5; border-radius: 18px; padding: 12px; margin-top: 10px; width: 100%; text-align: left; cursor: pointer; color: inherit; font: inherit; }
+    .speaker.featured { border-color: #F5D48A; background: #FFFBF3; }
+    .avatar { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--blue); background: #EAF1FF; flex: none; border: 2px solid #D5E2FF; }
+    .speaker.featured .avatar { border-color: var(--gold); color: #1a1404; background: #fff; }
+    .pill-session { display: inline-block; margin-top: 6px; background: #E8F1FF; color: var(--blue); border-radius: 999px; padding: 3px 8px; font-size: 11px; font-weight: 700; }
+    .badge-card { background: white; color: var(--ink); border-radius: 24px; overflow: hidden; margin-top: 16px; box-shadow: 0 8px 24px rgba(7,26,74,.18); }
+    .badge-head { background: linear-gradient(90deg, #2F6BFF, #4FC3F7); color: white; text-align: center; padding: 18px 16px 28px; }
+    .badge-head small { display: block; letter-spacing: 1.4px; font-size: 11px; font-weight: 700; opacity: .9; }
+    .badge-head strong { display: block; letter-spacing: 1px; font-size: 16px; margin-top: 2px; }
+    .badge-body { margin-top: -22px; padding: 0 16px 18px; text-align: center; }
+    .badge-avatar { width: 80px; height: 80px; margin: 0 auto; border-radius: 50%; border: 3px solid var(--gold); display: grid; place-items: center; background: white; color: var(--blue); font-size: 26px; font-weight: 800; }
+    .info-row { display: flex; gap: 10px; align-items: center; text-align: left; background: #F4F7FB; border-radius: 16px; padding: 10px 12px; margin-top: 8px; }
+    .info-ico { width: 36px; height: 36px; border-radius: 12px; background: white; color: var(--blue); display: grid; place-items: center; flex: none; }
+    .qr-wrap { margin: 16px auto 6px; width: 160px; height: 160px; background: white; }
+    .qr-wrap svg { display: block; }
+    .qr-wrap.blur { filter: blur(6px); }
+    .medal { display: inline-block; width: 16px; height: 16px; margin-left: 4px; vertical-align: -2px; }
+    .map-card { position: relative; height: 190px; border-radius: 22px; overflow: hidden; margin-top: 12px; background: #dbe7f5; cursor: pointer; }
+    .map-chip { position: absolute; top: 12px; left: 12px; background: white; color: var(--ink); border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 700; }
+    .map-pin { position: absolute; left: 50%; top: 46%; width: 54px; height: 54px; margin-left: -27px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; box-shadow: 0 8px 16px rgba(7,26,74,.18); }
+    .facilities { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .facility { display: flex; gap: 8px; align-items: center; background: #F4F7FB; border-radius: 14px; padding: 12px; font-weight: 700; }
+    .dots { display: flex; justify-content: center; gap: 6px; margin: 12px 0; }
+    .dots i { width: 6px; height: 6px; border-radius: 99px; background: rgba(255,255,255,.35); display: block; }
+    .dots i.on { width: 18px; background: #2F6BFF; }
+    .opt { width: 100%; text-align: left; border: 1px solid #E6EBF5; background: white; border-radius: 16px; padding: 10px 12px; margin-top: 8px; cursor: pointer; font: inherit; color: inherit; }
+    .opt.on { border-color: #2F6BFF; background: #F4F8FF; }
+    .opt .bar { height: 6px; border-radius: 99px; background: #E6EBF5; margin-top: 6px; overflow: hidden; }
+    .opt .bar span { display: block; height: 100%; background: linear-gradient(90deg, #2F6BFF, #4FC3F7); }
+    .poll-nav { display: grid; grid-template-columns: 44px 1fr 44px; gap: 10px; align-items: center; margin-top: 14px; }
+    .poll-nav .arrow { height: 44px; border: 0; border-radius: 14px; background: white; color: var(--blue); font-size: 18px; cursor: pointer; }
+    .status-chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 8px; font-size: 11px; font-weight: 800; }
+    .q-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; }
+    .q-tabs button { border: 0; border-radius: 999px; padding: 8px 0; background: rgba(255,255,255,.14); color: white; font: inherit; font-weight: 700; cursor: pointer; }
+    .q-tabs button.on { background: var(--gold); color: #1a1404; }
+    .q-card { display: flex; gap: 10px; background: #fffdf6; border: 1px solid #F5D48A; border-radius: 18px; padding: 12px; margin-top: 10px; text-align: left; color: var(--ink); }
+    .q-card strong { color: var(--ink); }
+    .res { display: flex; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #EEF2F8; color: var(--ink); }
+    .res-ico { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 11px; font-weight: 800; flex: none; }
+    .res-main { flex: 1; min-width: 0; }
+    .res-main strong, .res-main .muted { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .finder { display: flex; align-items: center; gap: 8px; background: #F4F7FB; border-radius: 16px; padding: 12px 14px; }
+    .finder input { border: 0; background: transparent; width: 100%; font: inherit; color: var(--ink); outline: none; }
+    .avatar-ring { width: 88px; height: 88px; margin: 12px auto 0; border-radius: 50%; padding: 4px; background: #F5B942; position: relative; }
+    .avatar-face { width: 100%; height: 100%; border-radius: 50%; background: white; color: var(--blue); display: grid; place-items: center; font-size: 28px; font-weight: 800; overflow: hidden; }
+    .avatar-face img { width: 100%; height: 100%; object-fit: cover; }
+    .pencil { position: absolute; right: -2px; bottom: 2px; width: 28px; height: 28px; border: 0; border-radius: 50%; background: #F5B942; color: #1a1404; font-weight: 800; cursor: pointer; }
+    .id-chip { display: inline-flex; margin-top: 10px; border: 1px solid #F5B942; color: #F5B942; border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: 13px; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .stat { background: white; color: var(--ink); border: 0; border-radius: 18px; padding: 14px 6px; cursor: pointer; }
+    .stat strong { display: block; color: var(--blue); font-size: 22px; }
+    .info-row { display: flex; gap: 12px; align-items: center; text-align: left; padding: 12px 0; border-top: 1px solid #EEF2F8; background: none; border-left: 0; border-right: 0; border-bottom: 0; width: 100%; color: inherit; font: inherit; cursor: pointer; }
+    .info-ico { width: 36px; height: 36px; border-radius: 12px; background: #E8F0FF; color: var(--blue); display: grid; place-items: center; flex: none; }
+    .profile-fields label { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); font-weight: 700; }
+    .profile-fields > input { width: 100%; box-sizing: border-box; border: 1px solid #E6EBF5; border-radius: 14px; background: #F4F7FB; padding: 12px 14px; font: inherit; color: var(--ink); }
+    .chips-row { scrollbar-width: none; }
+    .chips-row::-webkit-scrollbar { display: none; }
+    .q-vote { width: 42px; border: 0; background: transparent; color: var(--blue); font-weight: 800; cursor: pointer; }
+    .q-vote.on { color: var(--blue); }
+    textarea.ask { width: 100%; min-height: 84px; border: 0; background: #F4F7FB; border-radius: 16px; padding: 12px 14px; font: inherit; resize: none; color: var(--ink); }
+    .sheet { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: grid; align-items: end; }
+    .sheet .box { background: white; color: var(--ink); border-radius: 28px 28px 0 0; padding: 20px 20px 32px; max-width: 430px; margin: 0 auto; width: 100%; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="stage" id="app"></div>
+  <nav class="bottom hidden" id="nav">
+    <button id="nav-home" class="on">Home</button>
+    <button id="nav-profile">Profile</button>
+  </nav>
+  <script>
+    const state = { screen: "welcome", busy: false, error: "", info: "", devOtp: "", email: "", user: null, event: null, unread: 0, upcoming: null, search: "", results: null, obscure: true, terms: false, password: "", sheet: null };
+    const tokenKey = "nmc_tokens";
+
+    function tokens() { try { return JSON.parse(localStorage.getItem(tokenKey) || "null"); } catch { return null; } }
+    function saveTokens(data) { localStorage.setItem(tokenKey, JSON.stringify({ access: data.access_token, refresh: data.refresh_token, user: data.user })); state.user = data.user; }
+    function clearTokens() { localStorage.removeItem(tokenKey); state.user = null; }
+
+    async function api(path, options = {}) {
+      const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+      const saved = tokens();
+      if (saved?.access && !options.authless) headers.Authorization = "Bearer " + saved.access;
+      let res = await fetch("/api/v1" + path, { ...options, headers });
+      let body = await res.json().catch(() => ({}));
+      if (res.status === 401 && body.error?.code === "TOKEN_EXPIRED" && saved?.refresh && !options.retried) {
+        const refresh = await fetch("/api/v1/auth/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refresh_token: saved.refresh }) });
+        const refreshed = await refresh.json();
+        if (!refresh.ok) { clearTokens(); throw Object.assign(new Error("Session expired"), { body: refreshed }); }
+        saveTokens(refreshed.data);
+        return api(path, { ...options, retried: true });
+      }
+      if (!res.ok) {
+        const error = new Error(body.error?.message || "Something went wrong.");
+        error.body = body;
+        throw error;
+      }
+      return body.data;
+    }
+
+    function fieldError(name) {
+      const fields = state.errorFields || [];
+      return fields.find((item) => item.field === name)?.message || "";
+    }
+
+    function render() {
+      const app = document.getElementById("app");
+      app.classList.toggle("tight", state.screen === "register");
+      const nav = document.getElementById("nav");
+      nav.classList.toggle("hidden", state.screen !== "home" && state.screen !== "profile");
+      document.getElementById("nav-home").classList.toggle("on", state.screen === "home");
+      document.getElementById("nav-profile").classList.toggle("on", state.screen === "profile");
+      app.innerHTML = screens[state.screen]();
+      if (state.sheet) app.insertAdjacentHTML("beforeend", state.sheet);
+      bind();
+    }
+
+    const screens = {
+      welcome() {
+        return `<div class="center"><span class="pill">NESTLÉ MEDICAL CONGRESS</span></div>
+          <div style="height:16px"></div>
+          <h1 class="center">NESTLÉ</h1><h1 class="center gold">CONGRESS</h1><div class="rule"></div>
+          <p class="muted center">The Next Era of Nutrition & Health</p>
+          <div class="card">
+            <div class="row"><div style="flex:1"><strong style="font-size:18px">Welcome Back</strong><div class="muted" style="color:var(--muted)">Sign in to continue your congress experience</div></div><div class="shield">🛡</div></div>
+            <label class="field"><span class="ico">✉</span><input id="email" type="email" placeholder="Enter your email" value="${esc(state.email)}"></label>
+            <label class="field"><span class="ico">🔒</span><input id="password" type="${state.obscure ? "password" : "text"}" placeholder="Enter your password" value="${esc(state.loginPassword || "")}"><button class="eye" id="eye" type="button">${state.obscure ? "Show" : "Hide"}</button></label>
+            ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+            <button class="btn" id="signin" ${state.busy ? "disabled" : ""}>${state.busy ? "Signing in…" : "Sign In →"}</button>
+            <div class="center" style="margin-top:8px"><button class="linkish" id="forgot">🔒 Forgot password?</button></div>
+          </div>
+          <p class="center muted" style="margin-top:18px">Don't have an account? <button class="goldlink" id="create">Create Account →</button></p>
+          <div class="chips"><div class="chip">🌐<br>Global<br>Experts</div><div class="chip">📘<br>Knowledge<br>Sessions</div><div class="chip">🤝<br>Networking &<br>Opportunities</div></div>`;
+      },
+      register() {
+        const eye = state.obscure
+          ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B98B4" stroke-width="1.8"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.4"/></svg>`
+          : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B98B4" stroke-width="1.8"><path d="M3 3l18 18M10.6 10.6A2.4 2.4 0 0013.4 13.4M9.9 5.2A10.8 10.8 0 0112 5c6.5 0 10 7 10 7a18 18 0 01-3.2 4.2M6.1 6.1C3.8 7.8 2 12 2 12s3.5 6 10 6c1.6 0 3-.4 4.2-1"/></svg>`;
+        return `<div class="reg-hero"><p class="kicker">Join the</p><h1>NESTLÉ</h1><h1 class="gold">CONGRESS</h1></div>
+          <p class="reg-sub">Create your attendee profile and access sessions, resources, voting and Q&amp;A.</p>
+          <div class="card reg">
+            <label class="field"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8"><circle cx="12" cy="8" r="3.1"/><path d="M5.2 19.2c.9-3.1 3.3-4.6 6.8-4.6s5.9 1.5 6.8 4.6"/></svg></span><input id="name" type="text" autocomplete="off" placeholder="Full name" value="${esc(state.name || "")}"></label>
+            <label class="field"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7.2l8 6 8-6"/></svg></span><input id="email" type="email" autocomplete="email" placeholder="Email address" value="${esc(state.email)}"></label>
+            ${fieldError("email") ? `<div class="err">${esc(fieldError("email"))}</div>` : ""}
+            <label class="field"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8"><path d="M4 20h16M6.5 20V5.5h7V20M13.5 9.5H18V20M9 9h2M9 12.5h2M9 16h2"/></svg></span><input id="org" type="text" autocomplete="off" placeholder="Hospital / Organization" value="${esc(state.org || "")}"></label>
+            <label class="field"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8"><rect x="6" y="10.5" width="12" height="8.5" rx="2"/><path d="M8.5 10.5V8.2a3.5 3.5 0 017 0v2.3"/></svg></span><input id="password" autocomplete="new-password" type="${state.obscure ? "password" : "text"}" placeholder="Create password" value="${esc(state.password)}"><button class="eye" id="reg-eye" type="button" aria-label="${state.obscure ? "Show" : "Hide"}">${eye}</button></label>
+            <label class="check"><input id="terms" type="checkbox" ${state.terms ? "checked" : ""}> <span>I agree to the congress <button class="linkish" data-cms="terms">terms</button>, <button class="linkish" data-cms="privacy">privacy policy</button> and <button class="linkish" data-cms="guidelines">attendee guidelines</button>.</span></label>
+            ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+            <button class="btn" id="submit" ${state.busy ? "disabled" : ""}>${state.busy ? "Creating…" : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.7-2.8 2.6-4.2 5.5-4.2 1.2 0 2.2.3 3 .8"/><path d="M17 11v6M14 14h6"/></svg> Create Account`}</button>
+            <div class="or-cap">OR SIGN UP WITH</div>
+            <div class="socials">
+              <button type="button" id="google" aria-label="Google"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.3C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.1 3.2-3.5 5.7-6.6 7.1l.1.1 6.3 5.3C36.9 41.6 44 36 44 24c0-1.2-.1-2.3-.4-3.5z"/></svg></button>
+              <button type="button" id="apple" aria-label="Apple"><svg width="18" height="18" viewBox="0 0 24 24" fill="#111"><path d="M16.4 12.7c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.7.8-3.4.8-.7 0-1.8-.8-3-.8-1.5 0-2.9.9-3.7 2.2-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.2 1.1 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.7-2.2c.9-1.2 1.2-2.4 1.3-2.5-.1 0-2.4-.9-2.6-3.6zM14.6 6.3c.6-.8 1-1.8.9-2.8-1 .1-2.1.6-2.8 1.4-.6.7-1.1 1.8-.9 2.8 1 .1 2.1-.5 2.8-1.4z"/></svg></button>
+            </div>
+            ${state.socialNote ? `<div class="err">${esc(state.socialNote)}</div>` : ""}
+          </div>
+          <p class="acct-foot">Already have an account? <button class="goldlink" id="signin-link">Sign In</button></p>`;
+      },
+      verify() {
+        const masked = state.email ? state.email[0] + "***@" + state.email.split("@")[1] : "your email";
+        return `<button class="back" id="back">‹</button>
+          <h1 style="font-size:22px;margin-top:20px">Verify email</h1>
+          <p class="muted">Enter the 6-digit code here for ${esc(masked)}.</p>
+          ${state.devOtp ? `<div class="card center" style="margin-bottom:12px"><div class="muted" style="color:var(--muted)">No email is sent on this computer. Type this code below.</div><div style="font-size:32px;letter-spacing:8px;font-weight:800;margin-top:6px">${esc(state.devOtp)}</div></div>` : `<div class="card center">Tap Resend code to show a new one, then enter it below.</div>`}
+          <div class="card"><div class="otp">${[0,1,2,3,4,5].map((i) => `<input maxlength="1" inputmode="numeric" id="d${i}" aria-label="Digit ${i+1}" autocomplete="one-time-code" value="${esc((state.otpEntry || "")[i] || "")}">`).join("")}</div>
+            ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+            <button class="btn" id="verify">Verify →</button>
+            <div class="center"><button class="linkish" id="resend">Resend code</button></div>
+            <div class="center"><button class="linkish" id="change">Change email</button></div>
+          </div>`;
+      },
+      forgot() {
+        return `<button class="back" id="back">‹</button>
+          <h1 style="font-size:22px;margin-top:20px">${state.info && state.devOtp !== undefined && state.step === "reset" ? "Reset password" : "Forgot password"}</h1>
+          <div class="card">
+            ${state.step === "reset"
+              ? `<label class="field"><span class="ico">#</span><input id="code" placeholder="6-digit code"></label>
+                 <label class="field"><span class="ico">🔒</span><input id="password" type="password" placeholder="New password"></label>
+                 ${state.devOtp ? `<p class="gold">Local dev code: ${esc(state.devOtp)}</p>` : ""}`
+              : `<label class="field"><span class="ico">✉</span><input id="email" type="email" placeholder="Email address" value="${esc(state.email)}"></label>`}
+            ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+            ${state.info ? `<div class="ok">${esc(state.info)}</div>` : ""}
+            <button class="btn" id="send">${state.step === "reset" ? "Update password" : "Send code"}</button>
+          </div>`;
+      },
+      home() {
+        const name = state.user?.full_name || "there";
+        const event = state.event;
+        const upcoming = state.upcoming;
+        let list = `<div class="panel">Loading sessions…</div>`;
+        if (upcoming?.error) list = `<div class="panel">${esc(upcoming.error)}<div><button class="linkish" id="retry">Retry</button></div></div>`;
+        else if (upcoming && !upcoming.sessions?.length) list = `<div class="panel">${esc(upcoming.message || "No upcoming sessions.")}</div>`;
+        else if (upcoming) list = upcoming.sessions.map(sessionCard).join("");
+        return `<div class="row"><div class="overline" style="color:#A9B8DC;flex:1">NESTLÉ MEDICAL CONGRESS</div>
+            <button class="bell" id="bell">🔔${state.unread ? `<span class="dot"></span>` : ""}</button></div>
+          <p class="muted" style="margin-bottom:0">Welcome Back,</p>
+          <h1 style="font-size:22px">${esc(name)} 👋</h1>
+          <form class="search" id="search-form"><span class="ico" style="position:static;padding-left:12px">⌕</span><input id="q" type="search" placeholder="Search sessions, speakers, topics..."><button class="go" type="submit">→</button></form>
+          ${event ? `<div class="feature" id="about"><div style="flex:1"><div class="overline">FEATURED EVENT</div><strong>${esc(event.name)}</strong><div class="muted" style="color:rgba(255,255,255,.8)">${esc(event.dates_label)} • ${esc(event.city)}, ${esc(event.country)}</div></div><div class="shield">🌿</div></div>` : `<div class="panel">Loading event…</div>`}
+          <div class="head"><strong>Quick Access</strong><button class="goldlink" id="view-tools">View All ›</button></div>
+          <div class="grid">${[["Agenda","agenda"],["Speakers","speakers"],["Name Tag","name-tag"],["Venue","venue"],["Voting","voting"],["Ask Q&A","qna"],["Resources","resources"],["Exhibitors","exhibitors"]].map(([name, route]) => `<button class="tile" ${route ? `data-go="${route}"` : `data-soon="${name}"`}><div class="ico-box">▣</div><span>${name}</span></button>`).join("")}</div>
+          <div class="head"><strong>Upcoming Sessions</strong><button class="goldlink" data-go="agenda">View All ›</button></div>
+          ${list}
+          <button class="ask-fab" id="ask-ai-open" type="button" aria-label="Ask AI"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2 13.7 8.3 19.8 10 13.7 11.7 12 17.8 10.3 11.7 4.2 10 10.3 8.3 12 2.2Zm6.2 11.1.8 2.7 2.7.8-2.7.8-.8 2.7-.8-2.7-2.7-.8 2.7-.8.8-2.7ZM6.4 14.2l.6 2 2 .6-2 .6-.6 2-.6-2-2-.6 2-.6.6-2Z"/></svg>Ask AI</button>`;
+      },
+      profile() {
+        const user = state.user || {};
+        const counts = user.counts || {};
+        const pad = (value) => String(value ?? 0).padStart(2, "0");
+        const initials = (user.full_name || "").split(" ").filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+        const face = user.avatar_url ? `<img src="${esc(user.avatar_url)}" alt="">` : esc(initials);
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>My Profile</strong><button class="back" id="settings" aria-label="Settings">⚙</button></div>
+          <div class="center"><div class="avatar-ring"><div class="avatar-face">${face}</div><button class="pencil" id="pick-avatar" aria-label="Change photo">✎</button></div><input id="avatar-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+            <h1 style="font-size:26px;margin:12px 0 0">${esc(user.full_name || "")}</h1>
+            <p class="muted" style="margin:4px 0 0">${esc(user.attendee_type || "")}</p>
+            <div class="id-chip">ID: ${esc(user.badge_code || "")}</div>
+          </div>
+          <div class="card" style="margin-top:16px;padding:8px 16px">
+            <button class="info-row" id="edit-profile"><span class="info-ico">✉</span><span><div class="muted" style="color:var(--muted);font-size:12px">Email</div><strong>${esc(user.email || "")}</strong></span></button>
+            <button class="info-row" id="edit-profile-phone"><span class="info-ico">☎</span><span><div class="muted" style="color:var(--muted);font-size:12px">Phone</div><strong>${esc(user.phone_display || user.phone || "Add phone")}</strong></span></button>
+            <button class="info-row" id="edit-profile-location"><span class="info-ico">⌖</span><span><div class="muted" style="color:var(--muted);font-size:12px">Location</div><strong>${esc(user.location || "Add location")}</strong></span></button>
+          </div>
+          ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+          ${state.info ? `<div class="ok">${esc(state.info)}</div>` : ""}
+          <div class="stats">
+            <button class="stat" id="stat-sessions"><span>📅</span><strong>${pad(counts.sessions)}</strong>Sessions</button>
+            <button class="stat" id="stat-saved"><span>🔖</span><strong>${pad(counts.saved)}</strong>Saved</button>
+            <button class="stat" id="stat-certs"><span>🏅</span><strong>${pad(counts.certificates)}</strong>Certificates</button>
+          </div>`;
+      },
+      editProfile() {
+        const user = state.user || {};
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Edit Profile</strong><span class="back"></span></div>
+          <div class="card profile-fields">
+            <label>Full name</label><input id="edit-name" value="${esc(user.full_name || "")}">
+            <label>Organization</label><input id="edit-org" value="${esc(user.organization || "")}">
+            <label>Designation</label><input id="edit-role" value="${esc(user.designation || "")}">
+            <label>Phone</label><input id="edit-phone" value="${esc(user.phone || "")}" placeholder="+971562834212">
+            <label>Location</label><input id="edit-location" value="${esc(user.location || "")}">
+            <p class="muted" style="color:var(--muted)">Email ${esc(user.email || "")} and ID ${esc(user.badge_code || "")} stay the same.</p>
+            ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+            <button class="btn" id="save-profile">Save</button>
+          </div>`;
+      },
+      certificates() {
+        const rows = state.certificates || [];
+        const list = rows.length ? rows.map((item) => `<div class="card" style="margin-top:12px"><strong>${esc(item.event_name || "")}</strong><div class="muted" style="color:var(--muted)">${esc(item.certificate_number || "")}</div><div class="muted" style="color:var(--muted)">${esc((item.issued_at || "").slice(0, 10))}</div><button class="btn" data-cert="${item.id}">Download PDF</button></div>`).join("") : `<div class="panel">No certificates yet.</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Certificates</strong><span class="back"></span></div>${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}${state.info ? `<div class="ok">${esc(state.info)}</div>` : ""}${list}`;
+      },
+      settings() {
+        const prefs = state.user?.notification_preferences || {};
+        const row = (key, label) => `<label class="info-row" style="cursor:pointer"><span style="flex:1">${label}</span><input type="checkbox" data-pref="${key}" ${prefs[key] === false ? "" : "checked"}></label>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Settings</strong><span class="back"></span></div>
+          <div class="card" style="padding:8px 16px">
+            ${row("event_updates", "Event updates")}
+            ${row("session_reminders", "Session reminders")}
+            ${row("qna", "Q&A responses")}
+            ${row("resources", "New resources")}
+          </div>
+          <div class="card profile-fields" style="margin-top:12px">
+            <label>Current password</label><input id="current-password" type="password">
+            <label>New password</label><input id="new-password" type="password">
+            <button class="btn" id="save-password">Change password</button>
+          </div>
+          <button class="linkish" data-cms="terms">Terms of Service</button>
+          <button class="linkish" data-cms="privacy">Privacy Policy</button>
+          <button class="linkish" data-cms="guidelines">Attendee Guidelines</button>
+          <p class="muted">App version 1.0.0</p>
+          ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+          ${state.info ? `<div class="ok">${esc(state.info)}</div>` : ""}
+          <button class="btn" id="delete-account" style="background:#E5484D">Request account deletion</button>
+          <button class="btn" id="logout">Log out</button>`;
+      },
+      search() {
+        const sessions = state.results?.sessions || [];
+        const people = state.results?.speakers || [];
+        const partners = state.results?.exhibitors || [];
+        const list = state.results == null ? `<div class="panel">Search sessions, speakers, topics.</div>` : `${sessions.length ? sessions.map(sessionCard).join("") : ""}${people.length ? people.map(speakerCard).join("") : ""}${partners.length ? partners.map((item) => `<button class="speaker" data-exhibitor="${item.id}"><div class="avatar">▣</div><div style="flex:1"><div class="overline">EXHIBITOR</div><strong>${esc(item.name)}</strong><div class="muted" style="color:var(--muted)">${item.booth ? "Booth " + esc(item.booth) : ""}</div></div></button>`).join("") : ""}` || `<div class="panel">No results match your search.</div>`;
+        return `<div class="row"><button class="back" id="back">‹</button><form class="search" id="search-form" style="flex:1"><input id="q" value="${esc(state.search)}" placeholder="Search sessions"><button class="go">→</button></form></div><div style="height:16px"></div>${list}`;
+      },
+      quick() {
+        const tools = [
+          ["Agenda", "View full congress schedule", "Event", "agenda"],
+          ["Speakers", "Explore global medical experts", "Event", "speakers"],
+          ["Name Tag", "Access your digital badge", "Tools", "name-tag"],
+          ["Venue", "Location, facilities and directions", "Event", "venue"],
+          ["Voting", "Join live polls and see results", "Interactive", "voting"],
+          ["Ask Q&A", "Ask questions and upvote topics", "Interactive", "qna"],
+          ["Resources", "Presentations, documents and media", "Tools", "resources"],
+          ["Exhibitors", "Meet congress partners and sponsors", "Event", "exhibitors"],
+          ["AI Assistant", "Ask about your account and the congress", "Tools", "assistant"],
+        ];
+        const query = (state.toolQuery || "").toLowerCase();
+        const chip = state.toolChip || "All";
+        const visible = tools.filter(([title, description, tag]) => (chip === "All" || tag === chip) && (!query || title.toLowerCase().includes(query) || description.toLowerCase().includes(query)));
+        const cards = visible.length ? visible.map(([title, description, tag, route]) => `<button class="tile" data-tool="${route}" data-title="${esc(title)}" style="text-align:left;background:var(--soft);color:var(--ink);border-radius:16px;padding:12px"><strong>${esc(title)}</strong><div class="muted" style="color:var(--muted)">${esc(description)}</div><span class="tag">${esc(tag)}</span></button>`).join("") : `<div class="panel">No tools match your search.</div>`;
+        return `<div class="row"><button class="back" id="back">‹</button><strong style="flex:1;text-align:center">Quick Access</strong><button class="back" id="layout">${state.toolGrid === false ? "▦" : "☰"}</button></div>
+          <div class="feature"><div><strong>Explore Congress Tools</strong><div>Everything you need for the full event experience</div></div></div>
+          <div class="card" style="margin-top:16px">
+            <input id="tool-q" placeholder="Search quick access" value="${esc(state.toolQuery || "")}" style="padding-left:14px">
+            <div class="chips-row">${["All","Event","Interactive","Tools"].map((name) => `<button class="mini ${chip === name ? "on" : ""}" data-chip="${name}">${name}</button>`).join("")}</div>
+            <div class="${state.toolGrid === false ? "" : "grid"}">${cards}</div>
+          </div>`;
+      },
+      agenda() {
+        if (!state.agenda) return `<button class="back" id="back">‹</button><div class="panel">${state.error ? esc(state.error) : "Loading the agenda…"} ${state.error ? '<button class="linkish" id="retry-agenda">Retry</button>' : ""}</div>`;
+        const days = state.event?.days || [];
+        const sessions = state.agenda.sessions || [];
+        const list = sessions.length ? sessions.map(agendaCard).join("") : `<div class="panel">${state.agendaMine ? "You have no sessions on this day." : "No sessions match these filters."}</div>`;
+        return `<div class="row"><button class="back" id="back">‹</button><strong style="flex:1;text-align:center">Congress Agenda</strong><button class="back" id="find">⌕</button></div>
+          <h1 style="font-size:22px;margin-top:12px">${esc(dayName(days))} Schedule</h1>
+          <p class="muted">${esc(state.agenda.weekday)}, ${esc(state.agenda.date_label)}</p>
+          <div class="days">${days.map((day) => `<button class="day ${state.agenda.date === day.date ? "on" : ""}" data-day="${day.date}">${esc(day.label)}<br>${esc(day.short)}</button>`).join("")}</div>
+          <div class="card">
+            <div class="row"><strong style="flex:1">${esc(state.agenda.heading || "Sessions")}</strong><button class="linkish" id="reset">Reset</button></div>
+            ${state.showAgendaSearch ? `<input id="agenda-q" placeholder="Search sessions" value="${esc(state.agendaQuery || "")}" style="padding-left:14px;margin-top:8px">` : ""}
+            <div class="chips-row"><button class="mini ${state.agendaCategory || state.agendaMine ? "" : "on"}" data-cat="">All</button>${state.agenda.can_filter_mine ? `<button class="mini ${state.agendaMine ? "on" : ""}" id="my-sessions">My Sessions</button>` : ""}${(state.categories || []).map((cat) => `<button class="mini ${state.agendaCategory === cat.id ? "on" : ""}" data-cat="${cat.id}">${esc(cat.name)}</button>`).join("")}</div>
+          </div>
+          <div style="height:12px"></div>${list}`;
+      },
+      session() {
+        const session = state.sessionDetail;
+        if (!session) return `<button class="back" id="back">‹</button><div class="panel">Loading session…</div>`;
+        return `<button class="back" id="back">‹</button>
+          <p class="overline" style="margin-top:16px">${esc((session.category?.name || "").toUpperCase())}</p>
+          <h1 style="font-size:24px">${esc(session.title)}</h1>
+          <p class="muted">${esc(session.start_local)} ${esc(session.meridiem)} – ${esc(session.end_local)} ${esc(session.end_meridiem)} · ${esc(session.room || "")}</p>
+          ${session.status === "changed" || session.status === "cancelled" ? `<p class="gold">${esc(session.status)} ${esc(session.status_note || "")}</p>` : ""}
+          <div class="card"><strong>About this session</strong><p>${esc(session.description || "")}</p>
+            ${(session.speakers || []).length ? `<div style="margin-top:8px"><strong>Speakers</strong>${session.speakers.map((person) => `<button class="linkish" data-speaker="${person.id}" style="display:block;margin-top:6px">${esc(person.name)}</button>`).join("")}</div>` : (session.speaker_name ? `<strong>${esc(session.speaker_name)}</strong>` : "")}
+          </div>`;
+      },
+      speakers() {
+        if (state.speakersLoading && !state.speakerList) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Speakers</strong><span class="back"></span></div><div class="panel">Loading speakers…</div>`;
+        if (state.error && !state.speakerList) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Speakers</strong><span class="back"></span></div><div class="panel">${esc(state.error)} <button class="linkish" id="retry-speakers">Retry</button></div>`;
+        const data = state.speakerList || { speakers: [], countries: [] };
+        const people = data.speakers || [];
+        const cats = state.speakerCategories || [];
+        const list = people.length ? people.map(speakerCard).join("") : `<div class="panel">No speakers match your search.</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Speakers</strong><button class="back" id="featured" aria-label="Featured only" style="${state.speakerFeatured ? "color:#F5B942" : ""}">${state.speakerFeatured ? "★" : "☆"}</button></div>
+          <div class="hero-card"><div class="hero-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7"><circle cx="8" cy="8" r="2.2"/><circle cx="16" cy="8" r="2.2"/><path d="M3.5 18c.6-2.4 2.2-3.6 4.5-3.6s3.9 1.2 4.5 3.6M12 18c.5-2 1.8-3.2 4-3.2 2 0 3.3 1.1 4 3.2"/></svg></div><div><strong style="font-size:18px">Global Medical Experts</strong><div class="muted" style="color:#C5D0EA">Meet speakers from nutrition, research and healthcare</div></div></div>
+          <div class="card" style="margin-top:14px">
+            <label class="field" style="margin-top:0"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B98B4" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span><input id="speaker-q" type="search" placeholder="Search speakers" value="${esc(state.speakerQuery || "")}" style="padding-right:42px"><button class="eye" id="speaker-filter" type="button" aria-label="Filter by country"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F6BFF" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button></label>
+            <div class="chips-row"><button class="mini ${state.speakerCategory ? "" : "on"}" data-spcat="">All</button>${cats.map((cat) => `<button class="mini ${state.speakerCategory === cat.id ? "on" : ""}" data-spcat="${cat.id}">${esc(cat.name)}</button>`).join("")}</div>
+            ${list}
+            ${data.next_cursor ? `<button class="linkish" id="more-speakers" style="margin-top:10px">Load more</button>` : ""}
+          </div>`;
+      },
+      speaker() {
+        const person = state.speakerDetail;
+        if (!person) return `<button class="back" id="back">‹</button><div class="panel">${state.error ? esc(state.error) : "Loading speaker…"} ${state.error ? '<button class="linkish" id="retry-speaker">Retry</button>' : ""}</div>`;
+        const tags = (person.specializations || []).map((tag) => `<span class="tag">${esc(tag.name)}</span>`).join(" ");
+        const sessions = (person.sessions || []).map((session) => `<button class="session" data-open="${session.id}" style="width:100%;border:0;text-align:left;cursor:pointer"><div class="time">${esc(session.start_local)}<small>${esc(session.meridiem)}</small></div><div style="flex:1"><strong>${esc(session.title)}</strong><div class="muted" style="color:var(--muted)">${esc(session.room || "")}</div></div></button>`).join("");
+        return `<button class="back" id="back">‹</button>
+          <div class="center" style="margin-top:16px"><div class="badge-avatar" style="margin-bottom:8px">${esc(person.initials || "")}</div><h1 style="font-size:24px">${esc(person.name)}</h1><p class="muted">${esc(person.designation || "")}</p><p class="muted">${esc(person.organization || "")}${person.country ? " · " + esc(person.country) : ""}</p><div>${tags}</div></div>
+          <div class="card" style="margin-top:14px"><strong>Biography</strong><p>${esc(person.biography || "Biography coming soon.")}</p></div>
+          <div style="height:12px"></div><strong>Sessions</strong>${sessions || `<div class="panel">No sessions assigned.</div>`}`;
+      },
+      badge() {
+        if (state.badgeLoading && !state.badge) return `<div class="appbar"><button class="back" id="back">‹</button><strong>My Name Tag</strong><span class="back"></span></div><div class="panel">Loading your badge…</div>`;
+        if (state.error && !state.badge) return `<div class="appbar"><button class="back" id="back">‹</button><strong>My Name Tag</strong><span class="back"></span></div><div class="panel">${esc(state.error)} <button class="linkish" id="retry-badge">Retry</button></div>`;
+        const badge = state.badge;
+        const revoked = badge.status === "revoked";
+        const subtitle = [badge.designation, badge.attendee_type].filter(Boolean).join(" • ");
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>My Name Tag</strong><button class="back" id="print-badge" aria-label="Print" style="color:#F5B942">⎙</button></div>
+          ${revoked ? `<div class="err" style="margin-top:12px">Badge not active, contact registration desk</div>` : ""}
+          ${badge.checked_in_at ? `<div class="ok">Checked in</div>` : ""}
+          <div class="badge-card" id="badge-print">
+            <div class="badge-head"><small>NESTLÉ MEDICAL</small><strong>CONGRESS 2026</strong></div>
+            <div class="badge-body">
+              <div class="badge-avatar">${esc(badge.initials || "")}</div>
+              <h1 style="font-size:22px;margin-top:8px">${esc(badge.full_name)}</h1>
+              <p class="muted" style="color:var(--muted);margin:4px 0 10px">${esc(subtitle)} <svg class="medal" viewBox="0 0 24 24" fill="#F5B942"><path d="M12 13l-4-6h3l1 2 1-2h3l-4 6z"/><circle cx="12" cy="16" r="4"/></svg></p>
+              <div class="info-row"><div class="info-ico">▣</div><div><div class="muted" style="color:var(--muted);font-size:11px">Badge ID</div><strong>${esc(badge.badge_code)}</strong></div></div>
+              <div class="info-row"><div class="info-ico">📍</div><div><div class="muted" style="color:var(--muted);font-size:11px">Location</div><strong>${esc(badge.location)}</strong></div></div>
+              <div class="info-row"><div class="info-ico">📅</div><div><div class="muted" style="color:var(--muted);font-size:11px">Congress Date</div><strong>${esc(badge.event_dates_label)}</strong></div></div>
+              <div class="qr-wrap ${revoked ? "blur" : ""}">${qrSvg(badge.qr_modules)}</div>
+              <div class="muted" style="color:var(--muted);font-size:12px">Show this QR code at check-in</div>
+            </div>
+          </div>`;
+      },
+      venue() {
+        if (state.venueLoading && !state.venue) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Venue</strong><span class="back"></span></div><div class="panel">Loading the venue…</div>`;
+        if (state.error && !state.venue) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Venue</strong><span class="back"></span></div><div class="panel">${esc(state.error)} <button class="linkish" id="retry-venue">Retry</button></div>`;
+        const venue = state.venue;
+        const facilities = (venue.facilities || []).map((item) => `<div class="facility"><span>${facilityIcon(item.icon)}</span>${esc(item.label)}</div>`).join("");
+        const notices = (venue.notices || []).map((note) => `<div class="card" style="margin-top:10px">${esc(note.title || note)}</div>`).join("");
+        const map = venue.map_available
+          ? `<button class="map-card" id="open-map" type="button"><span class="map-chip">Map Preview</span><svg viewBox="0 0 300 190" width="100%" height="190" aria-hidden="true"><path d="M0 40 C80 20 120 90 300 30" fill="none" stroke="#c5d4ea" stroke-width="10"/><path d="M20 160 C90 120 150 150 290 90" fill="none" stroke="#c5d4ea" stroke-width="8"/><path d="M150 0 C140 70 180 90 160 190" fill="none" stroke="#d5e2f2" stroke-width="14"/></svg><span class="map-pin">📍</span></button>`
+          : `<div class="panel">Map unavailable</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Venue</strong><button class="back" id="directions" aria-label="Directions" style="color:#F5B942">▲</button></div>
+          <h1 style="font-size:26px;margin-top:18px">${esc(venue.name)}</h1>
+          <p class="muted">📅 ${esc(venue.dates_label)}</p>
+          <div class="card" style="display:flex;gap:12px;align-items:center"><div class="info-ico">📍</div><div><div class="overline">VENUE ADDRESS</div><strong>${esc(venue.address)}</strong></div></div>
+          ${map}
+          <div class="card" style="margin-top:12px"><strong>Venue Facilities</strong><div class="facilities">${facilities}</div></div>
+          ${notices}`;
+      },
+      voting() {
+        if (state.pollsLoading && !state.polls) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Live Voting</strong><span class="back"></span></div><div class="panel">Loading polls…</div>`;
+        if (state.error && !state.polls) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Live Voting</strong><span class="back"></span></div><div class="panel">${esc(state.error)} <button class="linkish" id="retry-polls">Retry</button></div>`;
+        const polls = state.polls || [];
+        if (!polls.length) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Live Voting</strong><button class="back" id="poll-history" style="color:#F5B942">▤</button></div><div class="hero-card"><div class="hero-ico" style="background:#F5B942">📊</div><div><strong>Audience Interaction</strong><div class="muted" style="color:#C5D0EA">Swipe polls, choose answers, and submit your vote</div></div></div><div class="panel">No active polls right now. Polls will appear here during sessions.</div>`;
+        const index = Math.min(state.pollIndex || 0, polls.length - 1);
+        const poll = polls[index];
+        const choice = state.pollChoices?.[poll.id];
+        const options = (poll.options || []).map((option) => {
+          const picked = (poll.my_option_ids || []).includes(option.id) || choice === option.id;
+          const results = option.percent != null;
+          return `<button class="opt ${picked ? "on" : ""}" data-option="${option.id}" ${poll.has_voted || poll.status !== "active" ? "disabled" : ""}>
+            <div class="row"><span>${picked ? "●" : "○"}</span><strong style="flex:1">${esc(option.label)}</strong>${results ? `<strong>${option.percent}%</strong>` : ""}</div>
+            ${results ? `<div class="bar"><span style="width:${option.percent}%"></span></div><div class="muted" style="color:var(--muted);text-align:right;font-size:12px">${option.votes} votes</div>` : ""}
+          </button>`;
+        }).join("");
+        const action = pollAction(poll, polls, index);
+        const label = action === "submit" ? "Submit Vote" : action === "voted" ? "Voted ✓" : "Next Poll";
+        const chip = poll.has_voted ? ["#E8F8EF", "#178A4A", "VOTED"] : poll.status === "paused" ? ["#EEF1F6", "#6B7A99", "PAUSED"] : poll.status === "closed" ? ["#FDECEC", "#E5484D", "CLOSED"] : ["#FFF6E0", "#C8890A", "VOTING"];
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Live Voting</strong><button class="back" id="poll-history" aria-label="Poll history" style="color:#F5B942">▤</button></div>
+          <div class="hero-card"><div class="hero-ico" style="background:linear-gradient(180deg,#F6C453,#F5B942)">📊</div><div><strong style="font-size:18px">Audience Interaction</strong><div class="muted" style="color:#C5D0EA">Swipe polls, choose answers, and submit your vote</div></div></div>
+          <div class="dots">${polls.map((_, dot) => `<i class="${dot === index ? "on" : ""}"></i>`).join("")}</div>
+          <div class="card" id="poll-card">
+            <div class="row"><span class="status-chip" style="background:${chip[0]};color:${chip[1]}">● ${chip[2]}</span><span class="muted" style="color:var(--muted);margin-left:8px">${esc(poll.label)}</span></div>
+            <h1 style="font-size:22px;margin-top:12px">${esc(poll.question)}</h1>
+            ${poll.total_votes != null ? `<p class="muted" style="color:var(--muted)">${poll.total_votes} total votes</p>` : `<p class="muted" style="color:var(--muted)">${esc(poll.results_message || "")}</p>`}
+            ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+            ${state.info ? `<div class="ok">${esc(state.info)}</div>` : ""}
+            ${options}
+          </div>
+          <div class="poll-nav"><button class="arrow" id="poll-prev" aria-label="Previous poll">‹</button><button class="btn" id="poll-action" style="margin-top:0" ${action === "voted" || state.busy ? "disabled" : ""}>${label}</button><button class="arrow" id="poll-next" aria-label="Next poll">›</button></div>`;
+      },
+      history() {
+        const polls = state.history || [];
+        const list = polls.length ? polls.map((poll) => `<div class="card" style="margin-top:10px"><strong>${esc(poll.question)}</strong><p class="muted" style="color:var(--muted)">${poll.total_votes || 0} total votes</p>${(poll.options || []).map((option) => `<div class="row" style="margin-top:6px"><span style="flex:1">${esc(option.label)}</span><strong>${option.percent == null ? "" : option.percent + "%"}</strong></div>`).join("")}</div>`).join("") : `<div class="panel">No closed polls yet.</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Poll History</strong><span class="back"></span></div>${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}${list}`;
+      },
+      qna() {
+        if (state.questionsLoading && !state.questions) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Ask Q&A</strong><span class="back"></span></div><div class="panel">Loading questions…</div>`;
+        const tab = state.questionTab || "recent";
+        const cats = state.questionCategories || [];
+        const selected = state.questionCategory || (cats[0] && cats[0].id) || "";
+        const questions = state.questions || [];
+        const list = questions.length ? questions.map(questionCard).join("") : `<div class="panel">${tab === "answered" ? "No answered questions yet." : "No questions yet."}</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Ask Q&A</strong><button class="back" id="my-questions" aria-label="My questions" style="color:#F5B942">💬</button></div>
+          <div class="hero-card"><div class="hero-ico">💬</div><div><strong style="font-size:18px">Ask the Experts</strong><div class="muted" style="color:#C5D0EA">Submit your questions and vote for top discussions</div></div></div>
+          <div class="card" style="margin-top:14px">
+            <strong>Write your question</strong>
+            <textarea class="ask" id="question-text" maxlength="500" placeholder="Type your question for the speaker...">${esc(state.questionText || "")}</textarea>
+            <div class="muted" id="q-count" style="text-align:right;color:var(--muted)">${(state.questionText || "").trim().length}/500</div>
+            <div class="chips-row">${cats.map((cat) => `<button class="mini ${selected === cat.id ? "on" : ""}" data-qcat="${cat.id}">${esc(cat.name)}</button>`).join("")}</div>
+            <button class="linkish" id="link-session" type="button">${state.questionSession ? "Linked: " + esc(state.questionSession.title) : "Link to session"}</button>
+            ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+            ${state.info ? `<div class="ok">${esc(state.info)}</div>` : ""}
+            <button class="btn" id="ask" ${(state.questionText || "").trim().length < 10 || state.busy ? "disabled" : ""}>➤ Submit Question</button>
+          </div>
+          <div class="q-tabs">${["popular","recent","answered"].map((name) => `<button class="${tab === name ? "on" : ""}" data-qtab="${name}">${name[0].toUpperCase()}${name.slice(1)}</button>`).join("")}</div>
+          ${list}
+          ${state.questionCursor ? `<button class="linkish" id="more-questions">Load more</button>` : ""}`;
+      },
+      resources() {
+        if (state.resourcesLoading && !state.resourceList) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Resources</strong><span class="back"></span></div><div class="panel">Loading resources…</div>`;
+        const chip = state.resourceChip || "all";
+        const chips = [["all","All"],["pdf","PDF"],["slides","Slides"],["video","Videos"],["saved","Saved"]];
+        const rows = state.resourceList || [];
+        const colors = { pdf: ["#FDECEC","#E5484D","PDF"], slides: ["#FFF4E0","#E59A12","SLIDES"], video: ["#F3EEFF","#7C5CFF","VIDEO"], document: ["#E8F0FF","#2F6BFF","DOC"], link: ["#E8F8EF","#178A4A","LINK"] };
+        const list = rows.length ? rows.map((item) => {
+          const tone = colors[item.type] || colors.document;
+          return `<div class="res"><div class="res-ico" style="background:${tone[0]};color:${tone[1]}">${tone[2] === "PDF" ? "PDF" : tone[2] === "SLIDES" ? "▶" : "▣"}</div><div class="res-main"><div class="overline" style="color:${tone[1]}">${tone[2]}</div><strong>${esc(item.title)}</strong><div class="muted" style="color:var(--muted)">${esc(item.description || "")}</div>${item.file_size_label ? `<div class="muted" style="color:var(--muted)">▤ ${esc(item.file_size_label)}</div>` : ""}</div><div style="display:flex;flex-direction:column;gap:10px;align-items:center"><button class="linkish" data-save-res="${item.id}" aria-label="Save"><svg width="18" height="18" viewBox="0 0 24 24" fill="${item.is_bookmarked ? "#2F6BFF" : "none"}" stroke="#2F6BFF" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button><button class="linkish" data-dl="${item.id}" aria-label="Download"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7A99" stroke-width="2"><path d="M12 4v10M8 10l4 4 4-4M5 20h14"/></svg></button></div></div>`;
+        }).join("") : `<div class="panel">${chip === "saved" ? "No saved resources." : "No resources found."}</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Resources</strong><button class="back" id="saved-folder" aria-label="Saved"><svg width="20" height="20" viewBox="0 0 24 24" fill="${chip === "saved" ? "#F5B942" : "none"}" stroke="#F5B942" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button></div>
+          <div class="hero-card"><div class="hero-ico">⬇</div><div><strong style="font-size:18px">Congress Library</strong><div class="muted" style="color:#C5D0EA">Access presentations, documents and media files</div></div></div>
+          <div class="card" style="margin-top:14px">
+            <label class="finder"><span>⌕</span><input id="resource-q" value="${esc(state.resourceQuery || "")}" placeholder="Search resources"></label>
+            <div class="chips-row">${chips.map(([key, name]) => `<button class="mini ${chip === key ? "on" : ""}" data-rchip="${key}">${name}</button>`).join("")}</div>
+            ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+            ${state.info ? `<div class="ok">${esc(state.info)}</div>` : ""}
+            ${list}
+          </div>`;
+      },
+      mine() {
+        const questions = state.myQuestions || [];
+        const chips = { pending: "Pending", published: "Published", answered: "Answered", rejected: "Rejected", hidden: "Hidden" };
+        const list = questions.length ? questions.map((item) => `<div class="card" style="margin-top:10px"><span class="tag">${esc(chips[item.status] || item.status)}</span><p><strong>${esc(item.text)}</strong></p>${item.reject_reason ? `<p class="err">${esc(item.reject_reason)}</p>` : ""}${item.answer ? `<p class="muted" style="color:var(--muted)">${esc(item.answer.author_name)}: ${esc(item.answer.text)}</p>` : ""}</div>`).join("") : `<div class="panel">You have not asked a question yet.</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>My Questions</strong><span class="back"></span></div>${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}${list}`;
+      },
+      exhibitors() {
+        if (state.exhibitorsLoading && !state.exhibitorList) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Exhibitors</strong><span class="back"></span></div><div class="panel">Loading exhibitors…</div>`;
+        const rows = state.exhibitorList || [];
+        const cats = state.exhibitorCategories || [];
+        const selected = state.exhibitorCategory || "";
+        const list = rows.length ? rows.map((item) => `<button class="speaker" data-exhibitor="${item.id}"><div class="avatar">▣</div><div style="flex:1"><strong>${esc(item.name)}</strong><div class="muted" style="color:var(--muted)">${item.booth ? "Booth " + esc(item.booth) : ""} ${item.category ? "· " + esc(item.category.name) : ""}</div><div class="muted" style="color:var(--muted)">${esc(item.description || "")}</div></div></button>`).join("") : `<div class="panel">No exhibitors match your search.</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Exhibitors</strong><span class="back"></span></div>
+          <div class="card"><label class="finder"><span>⌕</span><input id="exhibitor-q" value="${esc(state.exhibitorQuery || "")}" placeholder="Search exhibitors"></label>
+          <div class="chips-row"><button class="mini ${selected ? "" : "on"}" data-excat="">All</button>${cats.map((cat) => `<button class="mini ${selected === cat.id ? "on" : ""}" data-excat="${cat.id}">${esc(cat.name)}</button>`).join("")}</div>
+          ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}${list}</div>`;
+      },
+      exhibitor() {
+        const item = state.exhibitor;
+        if (!item) return `<div class="appbar"><button class="back" id="back">‹</button><strong>Exhibitor</strong><span class="back"></span></div><div class="panel">${esc(state.error || "Loading exhibitor…")}</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Exhibitor</strong><span class="back"></span></div>
+          <div class="card"><h1 style="font-size:22px">${esc(item.name)}</h1>${item.booth ? `<div class="overline">Booth ${esc(item.booth)}</div>` : ""}${item.category ? `<p>${esc(item.category.name)}</p>` : ""}<p>${esc(item.description || "")}</p>
+          ${item.website ? `<a class="btn" href="${esc(item.website)}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">Website</a>` : ""}
+          ${item.contact_email ? `<p><a href="mailto:${esc(item.contact_email)}">${esc(item.contact_email)}</a></p>` : ""}</div>`;
+      },
+      assistant() {
+        const messages = state.aiMessages || [];
+        const suggestions = state.aiSuggestions || [];
+        const thread = messages.length ? messages.map((item, index) => {
+          const mine = item.role === "user";
+          const refs = (item.references || []).slice(0, 3).map((ref) => `<button class="mini" data-ref-type="${esc(ref.type)}" data-ref-id="${esc(ref.id)}">${esc(ref.label || ref.type)}</button>`).join("");
+          const follows = (item.followups || []).slice(0, 2).map((text) => `<button class="mini" data-follow="${esc(text)}">${esc(text)}</button>`).join("");
+          return `<div class="bubble ${mine ? "user" : "bot"}">${esc(item.content)}${refs || follows ? `<div class="chips-row">${refs}${follows}</div>` : ""}</div>`;
+        }).join("") : `<div class="panel">Ask about the congress, your badge, saved sessions, or how to open a screen.</div>`;
+        const chips = !messages.length ? `<div class="chips-row">${suggestions.map((text) => `<button class="mini" data-suggest="${esc(text)}">${esc(text)}</button>`).join("")}</div>` : "";
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Congress Assistant</strong><button class="back" id="clear-chat" style="font-size:12px;color:#F5B942">Clear</button></div>
+          <p class="muted">Answers use your account and the published congress. AI can make mistakes.</p>
+          ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+          ${thread}
+          ${state.aiBusy ? `<div class="bubble bot">Thinking…</div>` : ""}
+          ${chips}
+          <form class="chat-bar" id="ask-form"><input id="ai-q" maxlength="500" placeholder="Ask a question" value="${esc(state.aiDraft || "")}" ${state.aiBusy ? "disabled" : ""}><button class="go" type="submit" ${state.aiBusy ? "disabled" : ""}>➤</button></form>`;
+      },
+      notifications() {
+        const rows = state.notifications || [];
+        const list = rows.length ? rows.map((item) => `<button class="speaker" data-note="${item.id}" data-link="${esc(item.deep_link || "")}" style="${item.is_read ? "" : "background:#FFF8E8"}"><div style="flex:1;text-align:left"><strong>${esc(item.title)}</strong><div class="muted" style="color:var(--muted)">${esc(item.body)}</div></div></button>`).join("") : `<div class="panel">You're all caught up.</div>`;
+        return `<div class="appbar"><button class="back" id="back">‹</button><strong>Notifications</strong><button class="back" id="read-all" style="color:#F5B942;font-size:12px">All read</button></div>${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}${list}`;
+      },
+      soon() {
+        return `<button class="back" id="back">‹</button><h1 style="font-size:22px;margin-top:18px">${esc(state.soon || "")}</h1><div class="panel">This section is next. Login, registration, and Home are the screens in this build.</div>`;
+      }
+    };
+
+    function sessionCard(session) {
+      const category = session.category || {};
+      const place = session.speaker_name || session.room || "";
+      return `<div class="session"><div class="time">${esc(session.start_local)}<small>${esc(session.meridiem)}</small></div><div style="flex:1"><div class="overline">${esc((category.name || "").toUpperCase())}</div><strong>${esc(session.title)}</strong><div class="muted" style="color:var(--muted)">📍 ${esc(place)}</div></div></div>`;
+    }
+
+    function passwordRules(value) {
+      return { length: value.length >= 8 && value.length <= 72, upper: /[A-Z]/.test(value), lower: /[a-z]/.test(value), digit: /\d/.test(value) };
+    }
+    function esc(value) { return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch])); }
+
+    function go(screen, extra = {}) {
+      clearTimeout(state.speakerTimer);
+      Object.assign(state, { screen, error: "", errorFields: [], info: state.info, sheet: null }, extra);
+      if (extra.info === undefined && screen !== "forgot" && screen !== "verify") state.info = "";
+      render();
+    }
+
+    function bind() {
+      const on = (id, event, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(event, fn); };
+      on("signin", "click", login);
+      on("create", "click", () => go("register", { email: val("email") || state.email }));
+      on("forgot", "click", () => go("forgot", { step: "ask", email: val("email"), info: "", devOtp: "" }));
+      on("eye", "click", () => { state.obscure = !state.obscure; state.email = val("email"); state.loginPassword = document.getElementById("password").value; render(); });
+      on("back", "click", () => {
+        if (state.screen === "session") return go("agenda");
+        if (state.screen === "speaker") return state.speakerFrom === "session" ? go("session") : loadSpeakers();
+        if (state.screen === "history") return loadPolls();
+        if (state.screen === "mine") return loadQuestions();
+        if (["editProfile", "certificates", "settings"].includes(state.screen)) return loadProfile();
+        if (state.screen === "exhibitor") return loadExhibitors();
+        if (["search", "soon", "quick", "agenda", "speakers", "badge", "venue", "voting", "qna", "resources", "exhibitors", "notifications", "assistant", "profile"].includes(state.screen)) return go("home");
+        go("welcome");
+      });
+      on("view-tools", "click", () => go("quick"));
+      on("layout", "click", () => { state.toolQuery = val("tool-q") || state.toolQuery; state.toolGrid = state.toolGrid === false; render(); });
+      on("find", "click", () => { state.showAgendaSearch = !state.showAgendaSearch; render(); });
+      on("reset", "click", () => { state.agendaCategory = ""; state.agendaQuery = ""; state.agendaMine = false; loadAgenda(); });
+      on("retry-agenda", "click", loadAgenda);
+      on("submit", "click", register);
+      on("signin-link", "click", () => go("welcome"));
+      on("verify", "click", verify);
+      on("resend", "click", resend);
+      on("change", "click", () => go("register"));
+      on("send", "click", forgot);
+      on("logout", "click", logout);
+      on("settings", "click", () => go("settings"));
+      on("pick-avatar", "click", () => document.getElementById("avatar-file")?.click());
+      on("edit-profile", "click", () => go("editProfile"));
+      on("edit-profile-phone", "click", () => go("editProfile"));
+      on("edit-profile-location", "click", () => go("editProfile"));
+      on("save-profile", "click", saveProfile);
+      on("save-password", "click", savePassword);
+      on("delete-account", "click", deleteAccount);
+      on("stat-sessions", "click", () => { state.agendaSaved = true; go("agenda"); loadAgenda(); });
+      on("stat-saved", "click", () => { state.resourceChip = "saved"; loadResources(); });
+      on("stat-certs", "click", loadCertificates);
+      document.getElementById("avatar-file")?.addEventListener("change", uploadAvatar);
+      document.querySelectorAll("[data-pref]").forEach((input) => input.addEventListener("change", () => savePreference(input.dataset.pref, input.checked)));
+      document.querySelectorAll("[data-cert]").forEach((button) => button.addEventListener("click", () => downloadCertificate(button.dataset.cert)));
+      on("bell", "click", () => loadNotifications());
+      on("ask-ai-open", "click", () => loadAssistant());
+      on("clear-chat", "click", () => clearAssistant());
+      on("ask-form", "submit", (event) => { event.preventDefault(); state.aiDraft = ""; askAssistant(val("ai-q")); });
+      document.querySelectorAll("[data-suggest]").forEach((button) => button.addEventListener("click", () => askAssistant(button.dataset.suggest)));
+      document.querySelectorAll("[data-follow]").forEach((button) => button.addEventListener("click", () => askAssistant(button.dataset.follow)));
+      document.querySelectorAll("[data-ref-type]").forEach((button) => button.addEventListener("click", () => openReference(button.dataset.refType, button.dataset.refId)));
+      on("about", "click", () => { state.sheet = `<div class="sheet"><div class="box"><strong>${esc(state.event.title)}</strong><p>${esc(state.event.description || state.event.tagline)}</p><button class="btn" id="close-sheet">Close</button></div></div>`; render(); });
+      on("close-sheet", "click", () => { state.sheet = null; render(); });
+      on("retry", "click", loadHome);
+      on("search-form", "submit", (event) => { event.preventDefault(); state.search = val("q"); state.screen = "search"; search(); });
+      const password = document.getElementById("password");
+      on("reg-eye", "click", () => { snapshotRegister(); state.obscure = !state.obscure; render(); });
+      on("google", "click", () => openSocial("google"));
+      on("apple", "click", () => openSocial("apple"));
+      document.getElementById("terms")?.addEventListener("change", () => { snapshotRegister(); state.socialNote = ""; render(); });
+      document.querySelectorAll("[data-cms]").forEach((button) => button.addEventListener("click", () => openCms(button.dataset.cms)));
+      document.querySelectorAll("[data-soon]").forEach((button) => button.addEventListener("click", () => go("soon", { soon: button.dataset.soon })));
+      document.querySelectorAll("[data-go]").forEach((button) => button.addEventListener("click", () => openRoute(button.dataset.go)));
+      document.querySelectorAll("[data-chip]").forEach((button) => button.addEventListener("click", () => { state.toolChip = button.dataset.chip; state.toolQuery = val("tool-q"); render(); }));
+      document.querySelectorAll("[data-tool]").forEach((button) => button.addEventListener("click", () => ["agenda", "speakers", "name-tag", "venue", "voting", "qna", "resources", "exhibitors", "assistant"].includes(button.dataset.tool) ? openRoute(button.dataset.tool) : go("soon", { soon: button.dataset.title })));
+      document.querySelectorAll("[data-exhibitor]").forEach((button) => button.addEventListener("click", () => openExhibitor(button.dataset.exhibitor)));
+      document.querySelectorAll("[data-excat]").forEach((button) => button.addEventListener("click", () => { state.exhibitorQuery = val("exhibitor-q"); state.exhibitorCategory = button.dataset.excat; loadExhibitors(); }));
+      on("exhibitor-q", "change", () => { state.exhibitorQuery = val("exhibitor-q"); loadExhibitors(); });
+      document.querySelectorAll("[data-note]").forEach((button) => button.addEventListener("click", async () => {
+        try { const data = await api("/notifications/" + button.dataset.note, { method: "PATCH", body: "{}" }); state.unread = data.unread_count || 0; } catch {}
+        followLink(button.dataset.link);
+      }));
+      on("read-all", "click", async () => { try { const data = await api("/notifications/read-all", { method: "POST", body: "{}" }); state.unread = data.unread_count || 0; } catch (error) { state.error = error.message; } loadNotifications(); });
+      document.querySelectorAll("[data-rchip]").forEach((button) => button.addEventListener("click", () => { state.resourceQuery = val("resource-q"); state.resourceChip = button.dataset.rchip; loadResources(); }));
+      document.querySelectorAll("[data-save-res]").forEach((button) => button.addEventListener("click", () => toggleResourceBookmark(button.dataset.saveRes)));
+      document.querySelectorAll("[data-dl]").forEach((button) => button.addEventListener("click", () => downloadResource(button.dataset.dl)));
+      document.querySelectorAll("[data-qcat]").forEach((button) => button.addEventListener("click", () => { state.questionText = document.getElementById("question-text")?.value || state.questionText; state.questionCategory = button.dataset.qcat; render(); }));
+      document.querySelectorAll("[data-qtab]").forEach((button) => button.addEventListener("click", () => { state.questionText = document.getElementById("question-text")?.value || ""; state.questionTab = button.dataset.qtab; loadQuestions(); }));
+      document.querySelectorAll("[data-up]").forEach((button) => button.addEventListener("click", () => toggleUpvote(button.dataset.up)));
+      document.querySelectorAll("[data-reply]").forEach((button) => button.addEventListener("click", () => openReply(button.dataset.reply)));
+      document.querySelectorAll("[data-spcat]").forEach((button) => button.addEventListener("click", () => { state.speakerCategory = button.dataset.spcat; state.speakerQuery = val("speaker-q"); loadSpeakers(); }));
+      document.querySelectorAll("[data-speaker]").forEach((button) => button.addEventListener("click", () => openSpeaker(button.dataset.speaker)));
+      document.querySelectorAll("[data-country]").forEach((button) => button.addEventListener("click", () => { state.speakerCountry = button.dataset.country; state.sheet = null; loadSpeakers(); }));
+      on("featured", "click", () => { state.speakerFeatured = !state.speakerFeatured; state.speakerQuery = val("speaker-q"); loadSpeakers(); });
+      on("speaker-filter", "click", openCountrySheet);
+      on("retry-speakers", "click", loadSpeakers);
+      on("retry-speaker", "click", () => openSpeaker(state.speakerId));
+      on("retry-badge", "click", loadBadge);
+      on("print-badge", "click", () => window.print());
+      on("directions", "click", () => state.venue && window.open(state.venue.directions_url, "_blank"));
+      on("open-map", "click", () => state.venue && window.open(state.venue.directions_url, "_blank"));
+      on("retry-venue", "click", loadVenue);
+      on("retry-polls", "click", () => loadPolls());
+      on("poll-history", "click", loadHistory);
+      on("ask", "click", submitQuestion);
+      on("my-questions", "click", loadMine);
+      on("saved-folder", "click", () => { state.resourceQuery = val("resource-q"); state.resourceChip = state.resourceChip === "saved" ? "all" : "saved"; loadResources(); });
+      document.getElementById("resource-q")?.addEventListener("input", (event) => {
+        state.resourceQuery = event.target.value;
+        clearTimeout(state.resourceTimer);
+        state.resourceTimer = setTimeout(() => loadResources(true), 300);
+      });
+      on("link-session", "click", openSessionPicker);
+      on("more-questions", "click", () => loadQuestions(state.questionCursor, true));
+      document.getElementById("question-text")?.addEventListener("input", (event) => {
+        state.questionText = event.target.value;
+        const count = document.getElementById("q-count");
+        if (count) count.textContent = `${event.target.value.trim().length}/500`;
+        const button = document.getElementById("ask");
+        if (button) button.disabled = event.target.value.trim().length < 10;
+      });
+      on("poll-prev", "click", () => shiftPoll(-1));
+      on("poll-next", "click", () => shiftPoll(1));
+      on("poll-action", "click", () => {
+        const polls = state.polls || [];
+        const poll = polls[state.pollIndex || 0];
+        if (poll && pollAction(poll, polls, state.pollIndex || 0) === "submit") return submitVote();
+        shiftPoll(1);
+      });
+      document.querySelectorAll("[data-option]").forEach((button) => button.addEventListener("click", () => {
+        const poll = (state.polls || [])[state.pollIndex || 0];
+        if (!poll || poll.has_voted || poll.status !== "active") return;
+        state.pollChoices = state.pollChoices || {};
+        state.pollChoices[poll.id] = button.dataset.option;
+        state.info = "";
+        render();
+      }));
+      const pollCard = document.getElementById("poll-card");
+      if (pollCard) {
+        let startX = 0;
+        pollCard.addEventListener("pointerdown", (event) => { startX = event.clientX; });
+        pollCard.addEventListener("pointerup", (event) => {
+          const delta = event.clientX - startX;
+          if (delta > 50) shiftPoll(-1);
+          if (delta < -50) shiftPoll(1);
+        });
+      }
+      on("more-speakers", "click", () => loadSpeakers(state.speakerList?.next_cursor, true));
+      document.getElementById("speaker-q")?.addEventListener("input", (event) => {
+        state.speakerQuery = event.target.value;
+        clearTimeout(state.speakerTimer);
+        state.speakerTimer = setTimeout(() => loadSpeakers(), 300);
+      });
+      document.querySelectorAll("[data-day]").forEach((button) => button.addEventListener("click", () => { state.agendaDate = button.dataset.day; loadAgenda(); }));
+      document.querySelectorAll("[data-cat]").forEach((button) => button.addEventListener("click", () => { state.agendaCategory = button.dataset.cat; state.agendaMine = false; loadAgenda(); }));
+      on("my-sessions", "click", () => { state.agendaMine = !state.agendaMine; state.agendaCategory = ""; loadAgenda(); });
+      document.querySelectorAll("[data-open]").forEach((button) => button.addEventListener("click", () => openSession(button.dataset.open)));
+      document.querySelectorAll("[data-save]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); toggleBookmark(button.dataset.save); }));
+      document.getElementById("tool-q")?.addEventListener("input", (event) => { state.toolQuery = event.target.value; render(); document.getElementById("tool-q")?.focus(); });
+      document.getElementById("agenda-q")?.addEventListener("change", (event) => { state.agendaQuery = event.target.value; loadAgenda(); });
+      document.querySelectorAll(".otp input").forEach((input, index, list) => {
+        input.addEventListener("input", () => { if (input.value && list[index + 1]) list[index + 1].focus(); });
+      });
+    }
+
+    function val(id) { return document.getElementById(id)?.value?.trim() || ""; }
+    function snapshotRegister() {
+      state.name = val("name"); state.email = val("email"); state.org = val("org"); state.password = document.getElementById("password")?.value || state.password; state.terms = !!document.getElementById("terms")?.checked;
+    }
+
+    function dayName(days) {
+      return (days.find((day) => day.date === state.agenda?.date) || {}).label || "Day";
+    }
+    function agendaCard(session) {
+      const cancelled = session.status === "cancelled";
+      const chip = session.status === "changed" ? "Updated" : cancelled ? "Cancelled" : session.is_live ? "LIVE" : "";
+      return `<div class="session" data-open="${session.id}" style="${session.is_next || session.is_live ? "outline:2px solid #F5B942" : ""}"><div class="time">${esc(session.start_local)}<small>${esc(session.meridiem)}</small></div><div style="flex:1"><div class="overline">${esc((session.category?.name || "").toUpperCase())}</div><strong class="${cancelled ? "strike" : ""}">${esc(session.title)}</strong>${chip ? `<div style="font-size:11px;font-weight:700">${esc(chip)}</div>` : ""}<div class="muted" style="color:var(--muted)">📍 ${esc(session.speaker_name || session.room || "")}</div></div><button class="linkish" data-save="${session.id}">${session.is_bookmarked ? "★" : "☆"}</button></div>`;
+    }
+    function openRoute(route) {
+      if (route === "quick") return go("quick");
+      if (route === "speakers") return loadSpeakers();
+      if (route === "name-tag") return loadBadge();
+      if (route === "venue") return loadVenue();
+      if (route === "voting") return loadPolls();
+      if (route === "qna") return loadQuestions();
+      if (route === "resources") return loadResources();
+      if (route === "exhibitors") return loadExhibitors();
+      if (route === "notifications") return loadNotifications();
+      if (route === "assistant") return loadAssistant();
+      state.agendaSaved = false;
+      go("agenda");
+      return loadAgenda();
+    }
+    function speakerCard(person) {
+      const session = person.session ? `<span class="pill-session">${esc(person.session.title)}</span>` : "";
+      return `<button class="speaker ${person.is_featured ? "featured" : ""}" data-speaker="${person.id}"><div class="avatar">${esc(person.initials || "")}</div><div style="flex:1"><div class="overline">${person.is_featured ? "FEATURED SPEAKER" : "SPEAKER"}</div><strong>${esc(person.name)}</strong><div class="muted" style="color:var(--muted)">${esc(person.designation || "")}</div><div class="muted" style="color:var(--muted)">📍 ${esc(person.country || "")}</div>${session}</div><div style="color:${person.is_featured ? "#F5B942" : "#C5D0EA"}">${person.is_featured ? "★" : "☆"} ›</div></button>`;
+    }
+    function qrSvg(modules) {
+      if (!modules || !modules.length) return "";
+      const size = modules.length;
+      const cells = [];
+      modules.forEach((row, y) => { for (let x = 0; x < row.length; x += 1) if (row[x] === "1") cells.push(`<rect x="${x}" y="${y}" width="1" height="1"/>`); });
+      return `<svg viewBox="0 0 ${size} ${size}" width="160" height="160" shape-rendering="crispEdges"><rect width="${size}" height="${size}" fill="white"/><g fill="#111">${cells.join("")}</g></svg>`;
+    }
+    function openCountrySheet() {
+      const countries = state.speakerList?.countries || [];
+      const options = [`<button class="btn" data-country="" style="background:#F4F7FB;color:var(--ink)">All countries</button>`].concat(countries.map((country) => `<button class="btn" data-country="${esc(country)}" style="background:#F4F7FB;color:var(--ink)">${esc(country)}</button>`));
+      state.sheet = `<div class="sheet" id="sheet"><div class="box"><strong>Country</strong><p class="muted" style="color:var(--muted)">Show speakers from one country.</p>${options.join("")}<button class="linkish" id="close-sheet">Close</button></div></div>`;
+      render();
+    }
+    async function loadSpeakers(cursor, append) {
+      state.screen = "speakers";
+      state.speakersLoading = !append;
+      state.error = "";
+      if (!append) render();
+      try {
+        if (!state.event) state.event = await api("/events/current", { authless: true });
+        if (!state.speakerCategories) state.speakerCategories = (await api(`/events/${state.event.id}/categories?type=speaker`)).categories;
+        const params = new URLSearchParams();
+        if (state.speakerQuery) params.set("q", state.speakerQuery);
+        if (state.speakerCategory) params.set("category_id", state.speakerCategory);
+        if (state.speakerFeatured) params.set("featured", "true");
+        if (state.speakerCountry) params.set("country", state.speakerCountry);
+        if (cursor) params.set("cursor", cursor);
+        const data = await api(`/events/${state.event.id}/speakers?${params.toString()}`);
+        if (append && state.speakerList) {
+          data.speakers = state.speakerList.speakers.concat(data.speakers || []);
+        }
+        state.speakerList = data;
+        state.error = "";
+      } catch (error) {
+        state.error = error.message;
+        if (!append) state.speakerList = null;
+      }
+      state.speakersLoading = false;
+      if (state.screen === "speakers") {
+        render();
+        const field = document.getElementById("speaker-q");
+        if (field && document.activeElement !== field && state.speakerQuery) field.focus();
+      }
+    }
+    async function openSpeaker(id) {
+      state.speakerFrom = state.screen;
+      state.speakerId = id;
+      state.speakerDetail = null;
+      state.error = "";
+      go("speaker");
+      try { state.speakerDetail = await api("/speakers/" + id); }
+      catch (error) { state.error = error.message; }
+      if (state.screen === "speaker") render();
+    }
+    async function loadBadge() {
+      state.screen = "badge";
+      state.badgeLoading = true;
+      state.error = "";
+      render();
+      try { state.badge = await api("/me/badge"); state.error = ""; }
+      catch (error) { state.error = error.message; state.badge = null; }
+      state.badgeLoading = false;
+      if (state.screen === "badge") render();
+    }
+    function facilityIcon(icon) {
+      if (icon === "parking") return "P";
+      if (icon === "catering") return "🍴";
+      if (icon === "accessible") return "♿";
+      return "📶";
+    }
+    function pollAction(poll, polls, index) {
+      const choice = state.pollChoices?.[poll.id];
+      if (poll.status === "active" && !poll.has_voted && choice) return "submit";
+      if (!poll.has_voted && poll.status === "active") return "next";
+      if (index < polls.length - 1) return "next";
+      return "voted";
+    }
+    function shiftPoll(delta) {
+      const polls = state.polls || [];
+      if (!polls.length) return;
+      state.pollIndex = ((state.pollIndex || 0) + delta + polls.length) % polls.length;
+      state.error = "";
+      state.info = "";
+      render();
+    }
+    async function loadVenue() {
+      state.screen = "venue";
+      state.venueLoading = true;
+      state.error = "";
+      render();
+      try {
+        if (!state.event) state.event = await api("/events/current", { authless: true });
+        state.venue = await api(`/events/${state.event.id}/venue`);
+        state.error = "";
+      } catch (error) {
+        state.error = error.message;
+        state.venue = null;
+      }
+      state.venueLoading = false;
+      if (state.screen === "venue") render();
+    }
+    function connectPolls() {
+      if (state.pollSocket) return;
+      const saved = tokens();
+      if (!saved?.access) return;
+      const protocol = location.protocol === "https:" ? "wss" : "ws";
+      let socket;
+      try { socket = new WebSocket(`${protocol}://${location.host}/api/v1/ws?token=${encodeURIComponent(saved.access)}`); }
+      catch { return; }
+      state.pollSocket = socket;
+      socket.onopen = () => socket.send(JSON.stringify({ type: "subscribe", topics: ["polls"] }));
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data || "{}");
+        if (message.type === "poll.results_updated" && state.screen === "voting") loadPolls(true);
+        if ((message.type === "question.published" || message.type === "question.answered") && state.screen === "qna") loadQuestions(null, false, true);
+        if (message.type === "ping") socket.send(JSON.stringify({ type: "pong" }));
+      };
+      socket.onclose = () => { state.pollSocket = null; };
+    }
+    async function loadPolls(quiet) {
+      if (!quiet) {
+        state.screen = "voting";
+        state.pollsLoading = !state.polls;
+        state.error = "";
+        render();
+      }
+      try {
+        state.polls = await api("/polls/active");
+        state.error = "";
+        connectPolls();
+      } catch (error) {
+        state.error = error.message;
+        if (!quiet) state.polls = null;
+      }
+      state.pollsLoading = false;
+      if (state.screen === "voting") render();
+    }
+    async function loadHistory() {
+      state.screen = "history";
+      state.error = "";
+      render();
+      try { state.history = await api("/polls/history"); }
+      catch (error) { state.error = error.message; state.history = []; }
+      if (state.screen === "history") render();
+    }
+    async function submitVote() {
+      const poll = (state.polls || [])[state.pollIndex || 0];
+      const optionId = state.pollChoices?.[poll?.id];
+      if (!poll || !optionId) return shiftPoll(1);
+      state.busy = true;
+      state.error = "";
+      state.info = "";
+      render();
+      try {
+        const data = await api(`/polls/${poll.id}/votes`, {
+          method: "POST",
+          headers: { "Idempotency-Key": crypto.randomUUID() },
+          body: JSON.stringify({ option_ids: [optionId] }),
+        });
+        state.polls[state.pollIndex] = data.poll;
+        delete state.pollChoices[poll.id];
+        state.info = "Vote submitted";
+      } catch (error) {
+        const code = error.body?.error?.code;
+        if (code === "ALREADY_VOTED" || code === "POLL_CLOSED" || code === "POLL_NOT_ACTIVE") await loadPolls(true);
+        state.error = error.message;
+      }
+      state.busy = false;
+      if (state.screen === "voting") render();
+    }
+    function questionCard(item) {
+      const answered = item.status === "answered";
+      return `<article class="q-card" style="${answered ? "" : "border-color:#E6EBF5;background:white"}"><button class="q-vote ${item.has_upvoted ? "on" : ""}" data-up="${item.id}">⌃<div>${item.upvote_count}</div></button><div style="flex:1"><div><span class="tag">${esc(item.category?.name || "")}</span> ${answered ? `<span class="tag" style="background:#E8F8EF;color:#178A4A">Answered</span>` : ""}</div><strong>${esc(item.text)}</strong><div class="row" style="margin-top:8px"><span class="avatar" style="width:28px;height:28px;font-size:11px">${esc(item.footer_initials || "")}</span><span class="muted" style="color:var(--muted);flex:1">${esc(item.footer_name || "")}</span><button class="linkish" data-reply="${item.id}">↩ Reply</button></div></div></article>`;
+    }
+    async function loadQuestions(cursor, append, quiet) {
+      if (!quiet && !append) {
+        state.screen = "qna";
+        state.questionsLoading = !state.questions;
+        state.error = "";
+        render();
+      }
+      try {
+        if (!state.event) state.event = await api("/events/current", { authless: true });
+        if (!state.questionCategories) {
+          state.questionCategories = (await api(`/events/${state.event.id}/categories?type=question`)).categories;
+          state.questionCategory = state.questionCategory || state.questionCategories[0]?.id || "";
+        }
+        const params = new URLSearchParams({ tab: state.questionTab || "recent" });
+        if (cursor) params.set("cursor", cursor);
+        const data = await api(`/questions?${params.toString()}`);
+        const incoming = data.questions || [];
+        state.questions = append && state.questions ? state.questions.concat(incoming) : incoming;
+        state.questionCursor = data.next_cursor;
+        state.error = "";
+        connectPolls();
+      } catch (error) {
+        state.error = error.message;
+        if (!append && !quiet) state.questions = [];
+      }
+      state.questionsLoading = false;
+      if (state.screen === "qna") render();
+    }
+    async function submitQuestion() {
+      const text = document.getElementById("question-text")?.value || state.questionText || "";
+      state.questionText = text;
+      if (text.trim().length < 10) return;
+      state.busy = true;
+      state.error = "";
+      render();
+      try {
+        const data = await api("/questions", {
+          method: "POST",
+          body: JSON.stringify({ text, category_id: state.questionCategory, session_id: state.questionSession?.id || null }),
+        });
+        state.questionText = "";
+        state.questionSession = null;
+        state.info = data.message;
+      } catch (error) {
+        state.error = error.message;
+      }
+      state.busy = false;
+      await loadQuestions();
+    }
+    async function toggleUpvote(id) {
+      const item = (state.questions || []).find((question) => question.id === id);
+      if (!item) return;
+      const was = item.has_upvoted;
+      item.has_upvoted = !was;
+      item.upvote_count += was ? -1 : 1;
+      render();
+      try {
+        const data = await api(`/questions/${id}/upvote`, { method: was ? "DELETE" : "PUT" });
+        item.has_upvoted = data.upvoted;
+        item.upvote_count = data.upvote_count;
+      } catch (error) {
+        item.has_upvoted = was;
+        item.upvote_count += was ? 1 : -1;
+        state.error = error.message;
+      }
+      if (state.screen === "qna") render();
+    }
+    function openReply(id) {
+      const item = (state.questions || []).find((question) => question.id === id);
+      if (!item) return;
+      const answer = item.answer ? `<p><strong>${esc(item.answer.author_name)}</strong> · ${esc(item.answer.author_role || "")}</p><p>${esc(item.answer.text)}</p>` : `<p class="muted" style="color:var(--muted)">No answer yet.</p>`;
+      const composer = state.user?.role && state.user.role !== "attendee" ? `<textarea id="answer-text" class="ask" placeholder="Write an answer"></textarea><button class="btn" id="send-answer">Send answer</button>` : "";
+      state.sheet = `<div class="sheet" id="sheet"><div class="box"><strong>${esc(item.text)}</strong>${answer}${composer}<button class="linkish" id="close-sheet">Close</button></div></div>`;
+      state.replyId = id;
+      render();
+      document.getElementById("send-answer")?.addEventListener("click", sendAnswer);
+    }
+    async function sendAnswer() {
+      const text = document.getElementById("answer-text")?.value || "";
+      try {
+        await api(`/questions/${state.replyId}/answer`, { method: "POST", body: JSON.stringify({ answer_text: text }) });
+        state.sheet = null;
+        state.info = "Answer sent";
+        await loadQuestions(null, false, true);
+      } catch (error) {
+        state.error = error.message;
+        render();
+      }
+    }
+    async function loadMine() {
+      state.screen = "mine";
+      state.error = "";
+      render();
+      try { state.myQuestions = (await api("/questions/mine")).questions; }
+      catch (error) { state.error = error.message; state.myQuestions = []; }
+      if (state.screen === "mine") render();
+    }
+    async function loadResources(quiet) {
+      const focused = quiet && document.activeElement?.id === "resource-q";
+      if (!quiet) {
+        state.screen = "resources";
+        state.resourcesLoading = !state.resourceList;
+        state.error = "";
+        state.info = "";
+        render();
+      }
+      try {
+        const chip = state.resourceChip || "all";
+        const params = new URLSearchParams();
+        if (chip === "saved") params.set("saved", "true");
+        else if (chip !== "all") params.set("type", chip);
+        if ((state.resourceQuery || "").trim()) params.set("q", state.resourceQuery.trim());
+        const data = await api(`/resources?${params.toString()}`);
+        state.resourceList = data.resources || [];
+        state.error = "";
+      } catch (error) {
+        state.error = error.message;
+        if (!quiet) state.resourceList = [];
+      }
+      state.resourcesLoading = false;
+      if (state.screen === "resources") {
+        render();
+        if (focused) {
+          const input = document.getElementById("resource-q");
+          input?.focus();
+          const end = input?.value.length || 0;
+          input?.setSelectionRange(end, end);
+        }
+      }
+    }
+    async function toggleResourceBookmark(id) {
+      const item = (state.resourceList || []).find((row) => row.id === id);
+      if (!item) return;
+      const was = item.is_bookmarked;
+      item.is_bookmarked = !was;
+      render();
+      try {
+        const data = await api(`/me/bookmarks/resource/${id}`, { method: was ? "DELETE" : "PUT" });
+        item.is_bookmarked = data.bookmarked;
+        if ((state.resourceChip || "all") === "saved" && !item.is_bookmarked) state.resourceList = state.resourceList.filter((row) => row.id !== id);
+      } catch (error) {
+        item.is_bookmarked = was;
+        state.error = error.message;
+      }
+      if (state.screen === "resources") render();
+    }
+    async function downloadResource(id) {
+      state.error = "";
+      state.info = "";
+      try {
+        const data = await api(`/resources/${id}/access`);
+        window.open(data.url, "_blank", "noopener");
+        state.info = data.kind === "external" ? "Opening link" : "Download started";
+      } catch (error) {
+        state.error = error.message;
+      }
+      if (state.screen === "resources") render();
+    }
+    async function openSessionPicker() {
+      state.questionText = document.getElementById("question-text")?.value || state.questionText || "";
+      let sessions = [];
+      try { sessions = (await api("/questions/sessions-today")).sessions || []; }
+      catch { sessions = []; }
+      const options = [`<button class="btn" data-session="" style="background:#F4F7FB;color:var(--ink)">No session</button>`].concat(
+        sessions.length ? sessions.map((session) => `<button class="btn" data-session="${session.id}" data-title="${esc(session.title)}" style="background:#F4F7FB;color:var(--ink)">${esc(session.title)}</button>`) : [`<p class="muted" style="color:var(--muted)">No sessions today.</p>`]
+      );
+      state.sheet = `<div class="sheet"><div class="box"><strong>Link to session</strong>${options.join("")}<button class="linkish" id="close-sheet">Close</button></div></div>`;
+      render();
+      document.querySelectorAll("[data-session]").forEach((button) => button.addEventListener("click", () => {
+        state.questionSession = button.dataset.session ? { id: button.dataset.session, title: button.dataset.title } : null;
+        state.sheet = null;
+        render();
+      }));
+    }
+    async function loadAgenda() {
+      try {
+        if (!state.event) state.event = await api("/events/current", { authless: true });
+        if (!state.categories) state.categories = (await api(`/events/${state.event.id}/categories?type=session`)).categories;
+        const params = new URLSearchParams();
+        if (state.agendaDate) params.set("date", state.agendaDate);
+        if (state.agendaCategory) params.set("category_id", state.agendaCategory);
+        if (state.agendaQuery) params.set("q", state.agendaQuery);
+        if (state.agendaSaved) params.set("saved", "true");
+        if (state.agendaMine) params.set("mine", "true");
+        state.agenda = await api(`/events/${state.event.id}/agenda?${params.toString()}`);
+        state.agendaDate = state.agenda.date;
+        state.error = "";
+      } catch (error) {
+        state.error = error.message;
+        state.agenda = null;
+      }
+      if (state.screen === "agenda") render();
+    }
+    async function openSession(id) {
+      state.sessionDetail = null;
+      go("session");
+      try { state.sessionDetail = await api("/sessions/" + id); }
+      catch (error) { state.error = error.message; }
+      render();
+    }
+    async function toggleBookmark(id) {
+      const session = (state.agenda?.sessions || []).find((item) => item.id === id);
+      if (!session) return;
+      const saved = !!session.is_bookmarked;
+      session.is_bookmarked = !saved;
+      render();
+      try { await api(`/me/bookmarks/session/${id}`, { method: saved ? "DELETE" : "PUT" }); }
+      catch (error) { session.is_bookmarked = saved; state.error = error.message; render(); }
+    }
+
+    async function login() {
+      const email = val("email"); const password = document.getElementById("password").value;
+      if (!email.includes("@") || !password) { state.email = email; state.error = "Enter a valid email and your password."; render(); return; }
+      state.busy = true; state.email = email; state.error = ""; render();
+      try {
+        const data = await api("/auth/login", { method: "POST", authless: true, body: JSON.stringify({ email, password, device_info: "preview" }) });
+        saveTokens(data); state.busy = false; go("home"); await loadHome();
+      } catch (error) {
+        state.busy = false; state.error = error.message;
+        if (error.body?.error?.code === "EMAIL_NOT_VERIFIED") { state.email = email; go("verify"); if (!state.devOtp) await resend(); return; }
+        render();
+      }
+    }
+
+    function socialSheet(provider) {
+      const gmail = provider === "google";
+      return `<div class="sheet"><div class="box"><strong>${gmail ? "Continue with Gmail" : "Continue with Apple"}</strong>
+        <p class="muted" style="color:var(--muted)">${gmail ? "Use the Gmail address on your Google account." : "Use the email on your Apple account."}</p>
+        <label class="field" style="margin-top:12px"><input id="social-name" type="text" placeholder="Full name" value="${esc(state.name || "")}"></label>
+        <label class="field"><input id="social-email" type="email" placeholder="${gmail ? "name@gmail.com" : "name@icloud.com"}" value="${esc(state.socialEmail || "")}"></label>
+        ${state.socialError ? `<div class="err">${esc(state.socialError)}</div>` : ""}
+        <button class="btn" id="social-go" type="button">Continue</button>
+        <div class="center" style="margin-top:10px"><button class="linkish" id="close-sheet" type="button">Cancel</button></div>
+      </div></div>`;
+    }
+    function openSocial(provider) {
+      snapshotRegister();
+      state.socialError = "";
+      if (!state.terms) { state.socialNote = "Please agree to the terms to continue."; render(); return; }
+      state.socialNote = "";
+      state.sheet = socialSheet(provider);
+      render();
+      document.getElementById("social-go")?.addEventListener("click", () => socialSignup(provider));
+    }
+    async function socialSignup(provider) {
+      const fullName = val("social-name");
+      const email = val("social-email");
+      state.name = fullName;
+      state.socialEmail = email;
+      if (fullName.length < 2) { state.socialError = "Enter your full name."; state.sheet = socialSheet(provider); render(); document.getElementById("social-go")?.addEventListener("click", () => socialSignup(provider)); return; }
+      state.busy = true; state.socialError = ""; state.sheet = socialSheet(provider); render();
+      try {
+        const data = await api("/auth/social", { method: "POST", authless: true, body: JSON.stringify({ provider, full_name: fullName, email, accepted_terms: true, device_info: "preview" }) });
+        state.busy = false; state.sheet = null; state.socialEmail = ""; saveTokens(data); go("home"); await loadHome();
+      } catch (error) {
+        state.busy = false; state.socialError = error.message; state.sheet = socialSheet(provider); render();
+        document.getElementById("social-go")?.addEventListener("click", () => socialSignup(provider));
+      }
+    }
+
+    async function register() {
+      snapshotRegister();
+      const name = state.name || "";
+      const email = state.email || "";
+      const org = state.org || "";
+      const password = state.password || "";
+      if (!state.terms) { state.error = "Please agree to the terms to continue."; render(); return; }
+      if (name.length < 2 || !email.includes("@") || org.length < 2) { state.error = "Enter your full name, a valid email, and your organization."; render(); return; }
+      const rules = passwordRules(password);
+      if (!rules.length || !rules.upper || !rules.lower || !rules.digit) { state.error = "Password needs 8 or more characters, an uppercase letter, a lowercase letter, and a digit."; render(); return; }
+      state.busy = true; state.error = ""; render();
+      try {
+        const data = await api("/auth/register", { method: "POST", authless: true, body: JSON.stringify({ full_name: name, email, organization: org, password, accepted_terms: true }) });
+        state.busy = false; state.password = ""; state.otpEntry = ""; state.email = data.email || email; state.devOtp = data.dev_otp || ""; go("verify");
+      } catch (error) {
+        state.busy = false; state.error = error.message; state.errorFields = error.body?.error?.field_errors || []; render();
+      }
+    }
+
+    async function verify() {
+      const code = [0,1,2,3,4,5].map((i) => (document.getElementById("d" + i)?.value || "").replace(/\D/g, "")).join("");
+      state.otpEntry = code;
+      if (code.length < 6) { state.error = "Enter the 6-digit code here."; render(); return; }
+      try {
+        const data = await api("/auth/verify-email", { method: "POST", authless: true, body: JSON.stringify({ email: state.email, code, device_info: "preview" }) });
+        saveTokens(data); state.otpEntry = ""; go("home"); await loadHome();
+      } catch (error) { state.error = error.message; render(); }
+    }
+
+    async function resend() {
+      try {
+        const data = await api("/auth/resend-verification", { method: "POST", authless: true, body: JSON.stringify({ email: state.email }) });
+        state.devOtp = data.dev_otp || state.devOtp; state.error = ""; render();
+      } catch (error) { state.error = error.message; render(); }
+    }
+
+    async function forgot() {
+      try {
+        if (state.step !== "reset") {
+          const data = await api("/auth/forgot-password", { method: "POST", authless: true, body: JSON.stringify({ email: val("email") }) });
+          state.email = val("email"); state.step = "reset"; state.info = data.message; state.devOtp = data.dev_otp || ""; state.error = ""; render();
+        } else {
+          await api("/auth/reset-password", { method: "POST", authless: true, body: JSON.stringify({ email: state.email, code: val("code"), new_password: document.getElementById("password").value }) });
+          state.info = "Password updated. Sign in with your new password."; state.step = "ask"; go("welcome", { info: "Password updated. Sign in with your new password.", email: state.email });
+        }
+      } catch (error) { state.error = error.message; render(); }
+    }
+
+    async function openCms(key) {
+      const page = await api("/cms/" + key, { authless: true });
+      state.sheet = `<div class="sheet"><div class="box"><strong>${esc(page.title)}</strong><p>${esc(page.body_markdown)}</p><button class="btn" id="close-sheet">Close</button></div></div>`;
+      render();
+    }
+
+    async function loadProfile() {
+      state.screen = "profile";
+      state.error = "";
+      render();
+      try {
+        state.user = await api("/me");
+        state.error = "";
+      } catch (error) {
+        state.error = error.message;
+      }
+      if (state.screen === "profile") render();
+    }
+    async function saveProfile() {
+      state.error = "";
+      try {
+        state.user = await api("/me", {
+          method: "PATCH",
+          body: JSON.stringify({
+            full_name: val("edit-name"),
+            organization: val("edit-org"),
+            designation: val("edit-role"),
+            phone: val("edit-phone"),
+            location: val("edit-location"),
+          }),
+        });
+        state.info = "Profile updated";
+        go("profile");
+      } catch (error) {
+        state.error = error.message;
+        render();
+      }
+    }
+    async function uploadAvatar(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const body = new FormData();
+      body.append("file", file);
+      const saved = tokens();
+      const res = await fetch("/api/v1/me/avatar", { method: "POST", headers: { Authorization: "Bearer " + (saved?.access || "") }, body });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) { state.error = payload.error?.message || "Could not update the photo."; render(); return; }
+      state.user = payload.data;
+      state.info = "Photo updated";
+      render();
+    }
+    async function loadCertificates() {
+      state.screen = "certificates";
+      state.error = "";
+      state.info = "";
+      render();
+      try { state.certificates = (await api("/me/certificates")).certificates; }
+      catch (error) { state.error = error.message; state.certificates = []; }
+      if (state.screen === "certificates") render();
+    }
+    async function downloadCertificate(id) {
+      try {
+        const data = await api(`/me/certificates/${id}/access`);
+        window.open(data.url, "_blank", "noopener");
+        state.info = "Download started";
+      } catch (error) {
+        state.error = error.message;
+      }
+      if (state.screen === "certificates") render();
+    }
+    async function savePreference(key, enabled) {
+      try {
+        state.user = await api("/me", { method: "PATCH", body: JSON.stringify({ notification_preferences: { [key]: enabled } }) });
+      } catch (error) {
+        state.error = error.message;
+        render();
+      }
+    }
+    async function savePassword() {
+      state.error = "";
+      try {
+        await api("/me/password", { method: "PATCH", body: JSON.stringify({ current_password: val("current-password"), new_password: val("new-password") }) });
+        state.info = "Password updated";
+      } catch (error) {
+        state.error = error.message;
+      }
+      render();
+    }
+    async function deleteAccount() {
+      if (!confirm("Request deletion of this account?")) return;
+      try {
+        await api("/me", { method: "DELETE" });
+        clearTokens();
+        go("welcome");
+      } catch (error) {
+        state.error = error.message;
+        render();
+      }
+    }
+    async function loadHome() {
+      try {
+        const [event, me, unread, ] = await Promise.all([
+          api("/events/current", { authless: true }),
+          api("/me"),
+          api("/notifications/unread-count"),
+        ]);
+        state.event = event; state.user = me; state.unread = unread.count || 0;
+        try { state.upcoming = await api(`/events/${event.id}/sessions/upcoming?limit=5`); }
+        catch (error) { state.upcoming = { error: error.message, sessions: [] }; }
+        if (state.screen === "home" || state.screen === "profile") render();
+      } catch (error) {
+        state.upcoming = { error: error.message, sessions: [] };
+        if (state.screen === "home") render();
+      }
+    }
+
+    async function loadAssistant() {
+      state.screen = "assistant";
+      state.error = "";
+      state.aiBusy = false;
+      render();
+      try {
+        const [suggestions, current] = await Promise.all([api("/ai/suggestions"), api("/ai/conversations/current")]);
+        state.aiSuggestions = suggestions.suggestions || [];
+        state.aiConversationId = current.conversation_id;
+        state.aiMessages = (current.messages || []).slice().sort((a, b) => {
+          if ((a.created_at || "") !== (b.created_at || "")) return (a.created_at || "") < (b.created_at || "") ? -1 : 1;
+          if (a.role === b.role) return 0;
+          return a.role === "user" ? -1 : 1;
+        });
+      } catch (error) {
+        state.error = error.message;
+      }
+      if (state.screen === "assistant") render();
+    }
+    function openReference(type, id) {
+      if (type === "session" && id) return openSession(id);
+      if (type === "speaker" && id) return openSpeaker(id);
+      if (type === "venue") return loadVenue();
+      if (type === "resource") return loadResources();
+      if (type === "exhibitor" && id) return openExhibitor(id);
+      return null;
+    }
+    async function askAssistant(text) {
+      const message = (text || "").trim();
+      if (!message || state.aiBusy) return;
+      state.aiDraft = "";
+      state.error = "";
+      state.aiMessages = [...(state.aiMessages || []), { role: "user", content: message }];
+      state.aiBusy = true;
+      if (state.screen !== "assistant") state.screen = "assistant";
+      render();
+      try {
+        const data = await api("/ai/chat", { method: "POST", body: JSON.stringify({ conversation_id: state.aiConversationId, message }) });
+        state.aiConversationId = data.conversation_id;
+        state.aiMessages = [...state.aiMessages, { role: "assistant", content: data.answer, references: data.references || [], followups: data.followups || [] }];
+      } catch (error) {
+        state.error = error.message;
+      }
+      state.aiBusy = false;
+      if (state.screen === "assistant") render();
+    }
+    async function clearAssistant() {
+      if (!window.confirm("Clear this chat?")) return;
+      try { await api("/ai/conversations/current", { method: "DELETE" }); } catch (error) { state.error = error.message; }
+      state.aiConversationId = null;
+      state.aiMessages = [];
+      if (state.screen === "assistant") render();
+    }
+    async function loadExhibitors() {
+      state.screen = "exhibitors";
+      state.exhibitorsLoading = true;
+      state.error = "";
+      render();
+      try {
+        const categories = await api(`/events/${state.event.id}/categories?type=exhibitor`);
+        const query = new URLSearchParams();
+        if (state.exhibitorQuery) query.set("q", state.exhibitorQuery);
+        if (state.exhibitorCategory) query.set("category_id", state.exhibitorCategory);
+        const data = await api(`/events/${state.event.id}/exhibitors?${query.toString()}`);
+        state.exhibitorCategories = categories.categories || [];
+        state.exhibitorList = data.exhibitors || [];
+      } catch (error) {
+        state.error = error.message;
+        state.exhibitorList = [];
+      }
+      state.exhibitorsLoading = false;
+      if (state.screen === "exhibitors") render();
+    }
+    async function openExhibitor(id) {
+      state.screen = "exhibitor";
+      state.exhibitor = null;
+      state.error = "";
+      render();
+      try { state.exhibitor = await api("/exhibitors/" + id); }
+      catch (error) { state.error = error.message; }
+      if (state.screen === "exhibitor") render();
+    }
+    function followLink(link) {
+      if (!link) return go("home");
+      const match = String(link).match(/^nmc:\/\/([^/]+)\/?([^/]*)/);
+      const kind = match ? match[1] : "";
+      const id = match ? match[2] : "";
+      if (kind === "session") return id ? openSession(id) : loadAgenda();
+      if (kind === "poll") return loadPolls();
+      if (kind === "question") return loadQuestions();
+      if (kind === "qna") return loadQuestions();
+      if (kind === "resource") return loadResources();
+      if (kind === "exhibitor") return id ? openExhibitor(id) : loadExhibitors();
+      return go("home");
+    }
+    async function loadNotifications() {
+      state.screen = "notifications";
+      state.error = "";
+      render();
+      try {
+        const data = await api("/notifications");
+        state.notifications = data.notifications || [];
+        state.unread = data.unread_count || 0;
+      } catch (error) {
+        state.error = error.message;
+      }
+      if (state.screen === "notifications") render();
+    }
+    async function search() {
+      try { state.results = await api("/search?q=" + encodeURIComponent(state.search)); }
+      catch (error) { state.results = { sessions: [] }; state.error = error.message; }
+      render();
+    }
+
+    async function logout() {
+      const saved = tokens();
+      try { await api("/auth/logout", { method: "POST", body: JSON.stringify({ refresh_token: saved?.refresh }) }); } catch {}
+      clearTokens(); go("welcome");
+    }
+
+    document.getElementById("nav-home").onclick = () => { go("home"); loadHome(); };
+    document.getElementById("nav-profile").onclick = () => loadProfile();
+    (async function boot() {
+      const saved = tokens();
+      if (saved?.refresh) {
+        try {
+          const data = await api("/auth/refresh", { method: "POST", authless: true, body: JSON.stringify({ refresh_token: saved.refresh }) });
+          saveTokens(data); go("home"); await loadHome(); return;
+        } catch { clearTokens(); }
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>
