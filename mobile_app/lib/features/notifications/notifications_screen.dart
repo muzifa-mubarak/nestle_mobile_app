@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_exception.dart';
 import '../../shared/widgets/congress_widgets.dart';
+import '../auth/auth_controller.dart';
 import '../home/home_screen.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {

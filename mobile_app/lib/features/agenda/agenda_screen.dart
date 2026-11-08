@@ -6,6 +6,7 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_exception.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../shared/widgets/congress_widgets.dart';
+import '../auth/auth_controller.dart';
 import '../home/home_screen.dart';
 
 class AgendaScreen extends ConsumerStatefulWidget {
@@ -55,7 +56,7 @@ class _AgendaScreenState extends ConsumerState<AgendaScreen> {
       );
       final days = (event['days'] as List?) ?? [];
       setState(() {
-        _categories = [for (final item in categoryRows) if (item is Map) Map<String, dynamic>.from(item)],
+        _categories = [for (final item in categoryRows) if (item is Map) Map<String, dynamic>.from(item)];
         _agenda = data;
         _canFilterMine = data['can_filter_mine'] == true;
         _date ??= data['date']?.toString() ?? (days.isNotEmpty ? (days.first as Map)['date']?.toString() : null);

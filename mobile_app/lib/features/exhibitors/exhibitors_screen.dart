@@ -9,6 +9,7 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_exception.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../shared/widgets/congress_widgets.dart';
+import '../auth/auth_controller.dart';
 import '../home/home_screen.dart';
 
 class ExhibitorsScreen extends ConsumerStatefulWidget {
@@ -106,7 +107,7 @@ class _ExhibitorsScreenState extends ConsumerState<ExhibitorsScreen> {
               ),
               const SizedBox(height: 12),
               if (_loading) const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator(color: Colors.white))),
-              if (_error != null) ErrorPanel(message: _error is ApiException ? _error!.message : 'Could not load exhibitors.', onRetry: _load),
+              if (_error != null) ErrorPanel(message: _error is ApiException ? (_error! as ApiException).message : 'Could not load exhibitors.', onRetry: _load),
               if (!_loading && _error == null && _exhibitors.isEmpty) const EmptyPanel(message: 'No exhibitors match your search.'),
               for (final item in _exhibitors)
                 Card(
